@@ -510,17 +510,13 @@ const showPlan = step === "PLAN";
   </div>
 )}
         
-
-
-function BigChoice({
-  label,
-  sub,
-  onClick,
-}: {
+type BigChoiceProps = {
   label: string;
   sub: string;
   onClick: () => void;
-}) {
+};
+
+function BigChoice({ label, sub, onClick }: BigChoiceProps) {
   return (
     <button
       type="button"
