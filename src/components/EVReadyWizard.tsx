@@ -392,20 +392,7 @@ const showResult = step === "RESULT";
                 </div>
               </SliderCard>
 
-              {/* Output */}
-              {plan && (
-                <div className="mt-6 p-4 rounded-xl bg-black/30 border border-white/10 text-sm text-gray-300">
-                  <p>Charging speed: ~{plan.mph} miles/hour.</p>
-                  <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
-                  <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
-                  <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
-
-                  <p className="mt-2">
-                    Fast charge:{" "}
-                    <span className="font-semibold">{fastChargeSessions}</span> session(s) / week
-                  </p>
-                </div>
-              )}
+      
 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
   <button
     type="button"
