@@ -515,7 +515,7 @@ const showPlan = step === "PLAN";
       {/* ...all your JSX... */}
     </main>
   );
-} // ✅ closes EVReadyWizard
+} 
 
 function BigChoice({
   label,
@@ -527,9 +527,16 @@ function BigChoice({
   onClick: () => void;
 }) {
   return (
-    <button type="button" onClick={onClick}>
-      {/* ... */}
+    <button
+      type="button"
+      onClick={onClick}
+      className="group rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-5 text-left"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-lg font-semibold">{label}</span>
+        <span className="text-gray-400 group-hover:text-gray-200 transition">↳</span>
+      </div>
+      <p className="text-sm text-gray-400 mt-2">{sub}</p>
     </button>
   );
 }
-
