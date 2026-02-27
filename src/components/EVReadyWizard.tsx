@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 
-type Step = "Q1" | "Q2" | "MILES" | "RESULT";
+type Step = "Q1" | "Q2" | "MILES" | "PLAN" | "RESULT";
 type PlugAnswer = "yes" | "no" | null;
 type ChargeLevel = "L1" | "L2" | null;
 
@@ -226,8 +226,9 @@ export default function EVReadyWizard() {
     setStep("MILES");
   };
 
-  const showMiles = step === "MILES";
-  const showResult = step === "RESULT";
+const showMiles = step === "MILES";
+const showPlan = step === "PLAN";
+const showResult = step === "RESULT";
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -407,13 +408,16 @@ export default function EVReadyWizard() {
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-                <button
-                  type="button"
-                  onClick={() => setStep("RESULT")}
-                  className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/15 transition p-4 font-semibold"
-                >
-                  Show my result
-                </button>
+              <button
+               <button
+  type="button"
+  disabled={!plan}
+  onClick={() => setStep("PLAN")}
+  className={`rounded-2xl border border-white/10 transition p-4 font-semibold
+    ${plan ? "hover:border-white/25 bg-white/10 hover:bg-white/15" : "opacity-50 cursor-not-allowed bg-white/5"}`}
+>
+  Next →
+</button>
 
                 <button
                   type="button"
@@ -425,7 +429,54 @@ export default function EVReadyWizard() {
               </div>
             </div>
           )}
+{/* Plan page */}
+{showPlan && (
+  <div className="animate-[fadeIn_240ms_ease-out]">
+    <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
+      Here’s your weekly charging math
+    </h2>
+    <p className="text-gray-400 mt-3">
+      This is what your routine requires vs what home charging can supply.
+    </p>
 
+    <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
+      {plan ? (
+        <>
+          <p>Charging speed: ~{plan.mph} miles/hour.</p>
+          <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
+          <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
+          <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
+
+          <p className="mt-4">
+            <span className="text-gray-200 font-semibold">
+              Fast charge: {fastChargeSessions} session(s) / week
+            </span>
+          </p>
+        </>
+      ) : (
+        <p className="text-gray-400">Set your inputs first.</p>
+      )}
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+      <button
+        type="button"
+        onClick={() => setStep("RESULT")}
+        className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/15 transition p-4 font-semibold"
+      >
+        Show my result →
+      </button>
+
+      <button
+        type="button"
+        onClick={() => setStep("MILES")}
+        className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+      >
+        ← Back to sliders
+      </button>
+    </div>
+  </div>
+)}
           {/* Result */}
           {showResult && result && (
             <div className="animate-[fadeIn_240ms_ease-out]">
