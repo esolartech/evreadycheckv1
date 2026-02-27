@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 
-type Step = "Q1" | "Q2" | "MILES" | "PLAN" | "RESULT";
+type Step = "Q1" | "Q2" | "MILES" | "PLAN";
 type PlugAnswer = "yes" | "no" | null;
 type ChargeLevel = "L1" | "L2" | null;
 
@@ -104,6 +104,8 @@ export default function EVReadyWizard() {
   const weekdayChargeHours = 9; // fixed weekday hours
   const reserveMiles = 10;
 
+  const [showFinalResult, setShowFinalResult] = useState(false);
+  
   const reset = () => {
     setStep("Q1");
     setCanPlug(null);
@@ -228,7 +230,7 @@ export default function EVReadyWizard() {
 
 const showMiles = step === "MILES";
 const showPlan = step === "PLAN";
-const showResult = step === "RESULT";
+
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -425,6 +427,7 @@ const showResult = step === "RESULT";
       This is what your routine requires vs what home charging can supply.
     </p>
 
+    {/* Weekly charging math box */}
     <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
       {plan ? (
         <>
@@ -444,13 +447,16 @@ const showResult = step === "RESULT";
       )}
     </div>
 
+    {/* Buttons */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
       <button
         type="button"
-        onClick={() => setStep("RESULT")}
-        className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/15 transition p-4 font-semibold"
+        disabled={!result}
+        onClick={() => setShowFinalResult(false)}
+        className={`rounded-2xl border border-white/10 transition p-4 font-semibold
+          ${result ? "hover:border-white/25 bg-white/10 hover:bg-white/15" : "opacity-50 cursor-not-allowed bg-white/5"}`}
       >
-        Show my result →
+        Show my result ↓
       </button>
 
       <button
@@ -461,62 +467,49 @@ const showResult = step === "RESULT";
         ← Back to sliders
       </button>
     </div>
-  </div>
-)}
-          {/* Result */}
-          {showResult && result && (
-            <div className="animate-[fadeIn_240ms_ease-out]">
-              <div className="flex items-center justify-between gap-3 mb-4">
-                <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
-                  {result.badge}
-                </span>
-              </div>
 
-              <h2 className={`text-3xl sm:text-4xl font-bold ${result.color}`}>{result.title}</h2>
-              <p className="text-gray-200 mt-3 text-lg">{result.subtitle}</p>
-
-              <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
-                <p className="text-sm text-gray-400 mb-2">What this means</p>
-                <p className="text-gray-200">{result.body}</p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-                >
-                  Start over
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setStep(level ? "MILES" : "Q2")}
-                  className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/15 transition p-4 font-semibold"
-                >
-                  ← Adjust my inputs
-                </button>
-              </div>
-            </div>
-          )}
+    {/* Result appears BELOW, same page */}
+    {showFinalResult && result && (
+      <div className="mt-8">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
+            {result.badge}
+          </span>
         </div>
 
-        <style jsx global>{`
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: translateY(6px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}</style>
+        <h2 className={`text-3xl sm:text-4xl font-bold ${result.color}`}>{result.title}</h2>
+        <p className="text-gray-200 mt-3 text-lg">{result.subtitle}</p>
+
+        <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
+          <p className="text-sm text-gray-400 mb-2">What this means</p>
+          <p className="text-gray-200">{result.body}</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+          <button
+            type="button"
+            onClick={reset}
+            className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+          >
+            Start over
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowFinalResult(false);
+              setStep("PLAN");
+            }}
+            className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/15 transition p-4 font-semibold"
+          >
+            ← Adjust my inputs
+          </button>
+        </div>
       </div>
-    </main>
-  );
-}
+    )}
+  </div>
+)}
+        
 
 function BigChoice({ label, sub, onClick }: { label: string; sub: string; onClick: () => void }) {
   return (
