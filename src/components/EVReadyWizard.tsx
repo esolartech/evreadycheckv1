@@ -1,153 +1,127 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 type Step = "Q1" | "Q2" | "MILES" | "RESULT";
 type PlugAnswer = "yes" | "no" | null;
 type ChargeLevel = "L1" | "L2" | null;
 
-function calcChargePlan(opts: {
-  milesPerDrivingDay: number;
-  drivingDaysPerWeek: number;
-  homeLevel: "L1" | "L2";
-  overnightHours?: number; // default 9
-  l1MilesPerHour?: number; // default 4 (3–5)
-  l2MilesPerHour?: number; // default 25 (20–30)
-  fastSessionMiles?: number; // default 120 (top-up model)
-  publicL2SessionMiles?: number; // default 60
-  nightsPerWeekPluggedIn?: number; // default 7
-}) {
-  const {
-    milesPerDrivingDay,
-    drivingDaysPerWeek,
-    homeLevel,
-    overnightHours = 9,
-    l1MilesPerHour = 4,
-    l2MilesPerHour = 25,
-    fastSessionMiles = 120,
-    publicL2SessionMiles = 60,
-    nightsPerWeekPluggedIn = 7,
-  } = opts;
+type DayRow = {
+  dayIndex: number;
+  label: string;
+  startingMiles: number;
+  oneWayMiles: number;
+  returnMiles: number;
+  didFastCharge: boolean;
+  fastChargeMiles: number; // fullRange when didFastCharge
+  remainingMiles: number; // after reserve
+  overnightChargeMiles: number; // L1/L2 overnight miles added
+  nextStartingMiles: number;
+};
 
-  const mph = homeLevel === "L1" ? l1MilesPerHour : l2MilesPerHour;
+const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  const overnightMiles = mph * overnightHours;
-
-  // weekly driving need is miles * driving days (NOT 7 anymore)
-  const weeklyNeed = milesPerDrivingDay * drivingDaysPerWeek;
-
-  // weekly home supply: you can add overnightMiles per night you plug in,
-  // but you can't "use" more than your weekly need.
-  const weeklyHomeSupply = Math.min(weeklyNeed, overnightMiles * nightsPerWeekPluggedIn);
-
-  const weeklyShortfall = Math.max(0, weeklyNeed - weeklyHomeSupply);
-
-  const fastSessionsPerWeek =
-    weeklyShortfall === 0 ? 0 : Math.ceil(weeklyShortfall / fastSessionMiles);
-
-  const publicL2SessionsPerWeek =
-    weeklyShortfall === 0 ? 0 : Math.ceil(weeklyShortfall / publicL2SessionMiles);
-
-  return {
-    overnightMiles: Math.round(overnightMiles),
-    weeklyNeed: Math.round(weeklyNeed),
-    weeklyHomeSupply: Math.round(weeklyHomeSupply),
-    weeklyShortfall: Math.round(weeklyShortfall),
-    fastSessionsPerWeek,
-    publicL2SessionsPerWeek,
-  };
+function clampNonNeg(n: number) {
+  return Math.max(0, Math.round(n));
 }
 
-function calcFullResetPlan(opts: {
-  milesPerDrivingDay: number;
-  drivingDaysPerWeek: number;
+/**
+ * Spreadsheet-matching daily schedule logic:
+ * - Start day with startingMiles
+ * - Drive outbound (oneWayMiles)
+ * - If fast charge occurs, it happens AFTER outbound and resets to fullRangeMiles
+ * - Then drive return (returnMiles)
+ * - RemainingRaw:
+ *    if fastCharge: fullRangeMiles - returnMiles
+ *    else: startingMiles - (oneWayMiles + returnMiles)
+ * - Apply reserve buffer (subtract reserve, floor at 0)
+ * - Overnight add overnightChargeMiles -> next day starting
+ */
+function calcEvSchedule(opts: {
+  days: number; // rows to generate
+  initialStartingMiles: number; // e.g. fullRangeMiles
+  oneWayMiles: number; // outbound
+  returnMiles: number; // return
+  fullRangeMiles: number; // "full tank"
+  overnightChargeMiles: number; // e.g. L1 overnight miles (36) OR L2 overnight miles
+  reserveMiles: number; // e.g. 10
+  fastChargeDays: number[]; // day indices (0-based)
+}): DayRow[] {
+  const {
+    days,
+    initialStartingMiles,
+    oneWayMiles,
+    returnMiles,
+    fullRangeMiles,
+    overnightChargeMiles,
+    reserveMiles,
+    fastChargeDays,
+  } = opts;
+
+  const fastSet = new Set(fastChargeDays);
+  const rows: DayRow[] = [];
+
+  let startingMiles = initialStartingMiles;
+
+  for (let i = 0; i < days; i++) {
+    const label = DAY_LABELS[i % 7];
+    const didFastCharge = fastSet.has(i);
+
+    let remainingRaw: number;
+    let fastChargeMiles = 0;
+
+    if (didFastCharge) {
+      fastChargeMiles = fullRangeMiles;
+      remainingRaw = fullRangeMiles - returnMiles;
+    } else {
+      remainingRaw = startingMiles - (oneWayMiles + returnMiles);
+    }
+
+    const remainingMiles = clampNonNeg(remainingRaw - reserveMiles);
+    const nextStartingMiles = clampNonNeg(remainingMiles + overnightChargeMiles);
+
+    rows.push({
+      dayIndex: i,
+      label,
+      startingMiles: clampNonNeg(startingMiles),
+      oneWayMiles,
+      returnMiles,
+      didFastCharge,
+      fastChargeMiles,
+      remainingMiles,
+      overnightChargeMiles: clampNonNeg(overnightChargeMiles),
+      nextStartingMiles,
+    });
+
+    startingMiles = nextStartingMiles;
+  }
+
+  return rows;
+}
+
+function parseDayList(input: string, maxDays: number) {
+  // "0,2,4" -> [0,2,4], de-duped, valid range
+  const nums = input
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((s) => Number(s))
+    .filter((n) => Number.isFinite(n))
+    .map((n) => Math.floor(n))
+    .filter((n) => n >= 0 && n < maxDays);
+
+  return Array.from(new Set(nums)).sort((a, b) => a - b);
+}
+
+function calcOvernightMiles(opts: {
   homeLevel: "L1" | "L2";
-  fullRangeMiles: number;
-  reserveMiles?: number; // default 10
   overnightHours?: number; // default 9
   l1MilesPerHour?: number; // default 4
   l2MilesPerHour?: number; // default 25
-  fastResetToPct?: number; // default 1.0 (back to full)
-  nightsPerWeekPluggedIn?: number; // default 7
 }) {
-  const {
-    milesPerDrivingDay,
-    drivingDaysPerWeek,
-    homeLevel,
-    fullRangeMiles,
-    reserveMiles = 10,
-    overnightHours = 9,
-    l1MilesPerHour = 4,
-    l2MilesPerHour = 25,
-    fastResetToPct = 1.0,
-    nightsPerWeekPluggedIn = 7,
-  } = opts;
-
+  const { homeLevel, overnightHours = 9, l1MilesPerHour = 4, l2MilesPerHour = 25 } = opts;
   const mph = homeLevel === "L1" ? l1MilesPerHour : l2MilesPerHour;
-  const overnightAdd = mph * overnightHours;
-
-  // Weekly miles
-  const weeklyNeed = milesPerDrivingDay * drivingDaysPerWeek;
-
-  // If no driving, no resets needed
-  if (weeklyNeed <= 0) {
-    return {
-      overnightAdd: Math.round(overnightAdd),
-      reserveMiles,
-      daysPerFullTank: 0,
-      fastResetsPerWeek: 0,
-      weeklyNeed: 0,
-    };
-  }
-
-  // Simulate a “week” as a sequence of driving days + non-driving days.
-  // We'll model driving days first, then non-driving days.
-  // This is simple but effective for planning.
-  let socMiles = fullRangeMiles;
-  let fastResetsPerWeek = 0;
-
-  const totalDays = 7;
-  const nonDrivingDays = Math.max(0, totalDays - drivingDaysPerWeek);
-
-  // Helper: apply overnight charging if you plug in that night
-  let nightsRemaining = nightsPerWeekPluggedIn;
-
-  const applyOvernight = () => {
-    if (nightsRemaining > 0) {
-      socMiles = Math.min(fullRangeMiles, socMiles + overnightAdd);
-      nightsRemaining -= 1;
-    }
-  };
-
-  // Drive days
-  for (let i = 0; i < drivingDaysPerWeek; i++) {
-    socMiles -= milesPerDrivingDay;
-
-    if (socMiles < reserveMiles) {
-      fastResetsPerWeek += 1;
-      socMiles = Math.max(socMiles, fullRangeMiles * fastResetToPct);
-    }
-
-    applyOvernight();
-  }
-
-  // Non-driving days (still can charge overnight)
-  for (let i = 0; i < nonDrivingDays; i++) {
-    applyOvernight();
-  }
-
-  // "Days per full tank" (approx) using *average daily miles* across 7 days
-  const avgDailyMiles = weeklyNeed / 7;
-  const daysPerFullTank =
-    (fullRangeMiles - reserveMiles) / Math.max(avgDailyMiles, 1);
-
-  return {
-    overnightAdd: Math.round(overnightAdd),
-    reserveMiles,
-    daysPerFullTank: Number(daysPerFullTank.toFixed(1)),
-    fastResetsPerWeek,
-    weeklyNeed: Math.round(weeklyNeed),
-  };
+  return mph * overnightHours;
 }
 
 export default function EVReadyWizard() {
@@ -155,18 +129,35 @@ export default function EVReadyWizard() {
   const [canPlug, setCanPlug] = useState<PlugAnswer>(null);
   const [level, setLevel] = useState<ChargeLevel>(null);
 
-  // sliders
+  // Existing "pattern" inputs
   const [milesPerDay, setMilesPerDay] = useState<number>(140);
   const [drivingDays, setDrivingDays] = useState<number>(5);
-  const [fullRange, setFullRange] = useState<number>(260);
+
+  // Range / charging assumptions
+  const [fullRange, setFullRange] = useState<number>(270);
+  const [reserveMiles, setReserveMiles] = useState<number>(10);
+
+  // “Spreadsheet schedule” inputs derived from your pattern:
+  // Treat "miles per driving day" as a round trip; split into oneWay + return.
+  // You can later expose oneWay/return as advanced settings.
+  const oneWayMiles = useMemo(() => Math.round(milesPerDay / 2), [milesPerDay]);
+  const returnMiles = useMemo(() => milesPerDay - oneWayMiles, [milesPerDay, oneWayMiles]);
+
+  // Fast charge plan (day indices)
+  const [fastChargeDaysInput, setFastChargeDaysInput] = useState<string>("");
 
   const reset = () => {
     setStep("Q1");
     setCanPlug(null);
     setLevel(null);
+
     setMilesPerDay(140);
     setDrivingDays(5);
-    setFullRange(260);
+
+    setFullRange(270);
+    setReserveMiles(10);
+
+    setFastChargeDaysInput("");
   };
 
   const onQ1 = (ans: "yes" | "no") => {
@@ -183,31 +174,102 @@ export default function EVReadyWizard() {
     setStep("MILES");
   };
 
-  const plan =
-    canPlug === "yes" && level
-      ? calcChargePlan({
-          milesPerDrivingDay: milesPerDay,
-          drivingDaysPerWeek: drivingDays,
-          homeLevel: level,
-          overnightHours: 9,
-          nightsPerWeekPluggedIn: 7, // assume you plug in nightly when home
-        })
-      : null;
+  const showResult = step === "RESULT";
+  const showMiles = step === "MILES";
 
-  const resetPlan =
-    canPlug === "yes" && level
-      ? calcFullResetPlan({
-          milesPerDrivingDay: milesPerDay,
-          drivingDaysPerWeek: drivingDays,
-          homeLevel: level,
-          fullRangeMiles: fullRange,
-          reserveMiles: 10,
-          fastResetToPct: 1.0, // “fast charge puts you back to full”
-          nightsPerWeekPluggedIn: 7,
-        })
-      : null;
+  const overnightMiles = useMemo(() => {
+    if (!level) return 0;
+    return calcOvernightMiles({ homeLevel: level, overnightHours: 9 });
+  }, [level]);
 
-  const weeklyMiles = useMemo(() => milesPerDay * drivingDays, [milesPerDay, drivingDays]);
+  // Build a 7-day schedule where “drivingDays” days have driving, and the rest are 0 miles.
+  // To keep it premium + simple:
+  // - We simulate as "drive days first" then "non-drive days" (still charging overnight).
+  // - Users can optionally specify fast-charge day indices relative to this 0..6 sequence.
+  const scheduleDays = 7;
+
+  const fastChargeDays = useMemo(
+    () => parseDayList(fastChargeDaysInput, scheduleDays),
+    [fastChargeDaysInput]
+  );
+
+  // Create a per-day driving plan for the week:
+  // First `drivingDays` days: drive (oneWayMiles + returnMiles); remaining days: 0.
+  // We pass the per-day oneWay/return to the schedule calculator by zeroing them on non-driving days.
+  const rows = useMemo(() => {
+    if (canPlug !== "yes" || !level) return [];
+
+    // We'll simulate day-by-day with variable driving.
+    // We do that by calling calcEvSchedule on each day (since it expects constant oneWay/return),
+    // so here is a simple manual loop to preserve the sheet rules while allowing 0-mile days.
+    const rowsOut: DayRow[] = [];
+    let startingMiles = fullRange;
+
+    for (let i = 0; i < scheduleDays; i++) {
+      const label = DAY_LABELS[i % 7];
+      const isDriveDay = i < Math.min(7, Math.max(0, drivingDays));
+
+      const owm = isDriveDay ? oneWayMiles : 0;
+      const rtm = isDriveDay ? returnMiles : 0;
+
+      const didFastCharge = fastChargeDays.includes(i);
+
+      let remainingRaw: number;
+      let fastChargeMiles = 0;
+
+      if (didFastCharge && isDriveDay) {
+        // Fast charge after outbound; if there is no driving that day, fast charge doesn't matter.
+        fastChargeMiles = fullRange;
+        remainingRaw = fullRange - rtm;
+      } else {
+        remainingRaw = startingMiles - (owm + rtm);
+      }
+
+      const remainingMiles = clampNonNeg(remainingRaw - reserveMiles);
+      const nextStartingMiles = clampNonNeg(remainingMiles + overnightMiles);
+
+      rowsOut.push({
+        dayIndex: i,
+        label,
+        startingMiles: clampNonNeg(startingMiles),
+        oneWayMiles: owm,
+        returnMiles: rtm,
+        didFastCharge: didFastCharge && isDriveDay,
+        fastChargeMiles: (didFastCharge && isDriveDay) ? fastChargeMiles : 0,
+        remainingMiles,
+        overnightChargeMiles: clampNonNeg(overnightMiles),
+        nextStartingMiles,
+      });
+
+      startingMiles = nextStartingMiles;
+    }
+
+    return rowsOut;
+  }, [
+    canPlug,
+    level,
+    fullRange,
+    reserveMiles,
+    overnightMiles,
+    scheduleDays,
+    drivingDays,
+    oneWayMiles,
+    returnMiles,
+    fastChargeDays,
+  ]);
+
+  const totals = useMemo(() => {
+    const weeklyNeed = milesPerDay * drivingDays;
+    // “Home supply” here is NOT just overnightMiles*7, because you might hit 0 and need fast charging.
+    // So we compute a “deficit signal” from the schedule:
+    const last = rows[rows.length - 1];
+    const endedWith = last ? last.nextStartingMiles : fullRange;
+
+    // A simple indicator: how many days ended at 0 remaining (after reserve).
+    const zeroDays = rows.filter((r) => r.remainingMiles === 0 && (r.oneWayMiles + r.returnMiles) > 0).length;
+
+    return { weeklyNeed, endedWith, zeroDays };
+  }, [rows, milesPerDay, drivingDays, fullRange]);
 
   const result = useMemo(() => {
     if (canPlug === "no") {
@@ -223,8 +285,7 @@ export default function EVReadyWizard() {
 
     if (canPlug !== "yes" || !level) return null;
 
-    // your original thresholds were written as “daily”, but now we have driving days.
-    // We’ll interpret the threshold using miles-per-driving-day (most intuitive for users).
+    // Keep your existing heuristic language, but base it on milesPerDay (per driving day).
     if (level === "L1") {
       if (milesPerDay <= 50) {
         return {
@@ -242,7 +303,7 @@ export default function EVReadyWizard() {
           color: "text-orange-300",
           subtitle: "Level 1 is doable, but you’ll need support charging.",
           body:
-            "You’ll likely need occasional fast charging OR workplace/public Level 2 to stay comfortable.",
+            "You’ll likely need occasional fast charging OR plug in where you go (work/errands) to stay comfortable.",
         };
       }
       return {
@@ -261,8 +322,9 @@ export default function EVReadyWizard() {
           badge: "LEVEL 3",
           title: "✅ EV Ready",
           color: "text-green-300",
-          subtitle: "Level 2 + under ~200 miles per driving day is a strong fit.",
-          body: "Overnight Level 2 turns charging into an appliance-like routine.",
+          subtitle: "Level 2 + your driving pattern is a strong fit.",
+          body:
+            "Overnight Level 2 turns charging into an appliance-like routine: drive → park → plug → repeat.",
         };
       }
       return {
@@ -277,9 +339,6 @@ export default function EVReadyWizard() {
 
     return null;
   }, [canPlug, level, milesPerDay]);
-
-  const showResult = step === "RESULT";
-  const showMiles = step === "MILES";
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -351,14 +410,12 @@ export default function EVReadyWizard() {
             </div>
           )}
 
-          {/* Sliders */}
+          {/* Inputs + Spreadsheet Schedule */}
           {showMiles && (
             <div className="animate-[fadeIn_240ms_ease-out]">
-              <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
-                What’s your driving pattern?
-              </h2>
+              <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">What’s your driving pattern?</h2>
               <p className="text-gray-400 mt-3">
-                We’ll calculate your weekly shortfall based on miles × driving days.
+                We’ll calculate your week using “sheet logic” (fast charge resets to full after outbound).
               </p>
 
               {/* Miles per driving day */}
@@ -379,8 +436,7 @@ export default function EVReadyWizard() {
                 />
 
                 <p className="mt-3 text-sm text-gray-400">
-                  Weekly miles = {milesPerDay} × {drivingDays} ={" "}
-                  <span className="text-gray-200 font-semibold">{weeklyMiles}</span>
+                  We split this into a round trip: {oneWayMiles} out + {returnMiles} back.
                 </p>
               </div>
 
@@ -402,11 +458,12 @@ export default function EVReadyWizard() {
                 />
 
                 <p className="mt-3 text-sm text-gray-400">
-                  If you drive 140 miles for 5 days/week, set miles = 140 and days = 5.
+                  Weekly miles = {milesPerDay} × {drivingDays} ={" "}
+                  <span className="text-gray-200 font-semibold">{totals.weeklyNeed}</span>
                 </p>
               </div>
 
-              {/* Full range slider */}
+              {/* Range + reserve */}
               <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10">
                 <div className="flex items-baseline justify-between">
                   <span className="text-sm text-gray-400">Full range when charged</span>
@@ -423,51 +480,95 @@ export default function EVReadyWizard() {
                   className="w-full mt-5"
                 />
 
+                <div className="mt-5 flex items-center justify-between">
+                  <span className="text-sm text-gray-400">Reserve miles</span>
+                  <span className="text-lg font-semibold">{reserveMiles}</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={50}
+                  step={1}
+                  value={reserveMiles}
+                  onChange={(e) => setReserveMiles(Number(e.target.value))}
+                  className="w-full mt-3"
+                />
+
                 <p className="mt-3 text-sm text-gray-400">
-                  Used to estimate how often you need a full-range reset (10 mi reserve).
+                  Overnight adds about{" "}
+                  <span className="text-gray-200 font-semibold">{clampNonNeg(overnightMiles)}</span>{" "}
+                  miles ({level === "L1" ? "Level 1" : "Level 2"}).
                 </p>
               </div>
 
-              {/* Plan output */}
-              {plan && (
-                <div className="mt-6 p-4 rounded-xl bg-black/30 border border-white/10 text-sm text-gray-300">
-                  <p>Overnight you can add ~{plan.overnightMiles} miles.</p>
-                  <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
-                  <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
+              {/* Fast charge days */}
+              <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10">
+                <label className="block text-sm text-gray-300 mb-2">
+                  Fast charge day indices (0–6), comma-separated
+                </label>
+                <input
+                  value={fastChargeDaysInput}
+                  onChange={(e) => setFastChargeDaysInput(e.target.value)}
+                  placeholder="e.g., 2,4 (fast charge on Wed and Fri)"
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-sm text-gray-200 outline-none focus:border-white/25"
+                />
+                <p className="mt-2 text-sm text-gray-400">
+                  Fast charge happens <span className="text-gray-200">after outbound</span> and resets to full range.
+                </p>
+              </div>
 
-                  {plan.weeklyShortfall === 0 ? (
-                    <p className="mt-2 text-green-400">
-                      Your overnight charging fully covers your weekly driving.
-                    </p>
-                  ) : (
-                    <>
-                      <p className="mt-2">Weekly shortfall: ~{plan.weeklyShortfall} miles</p>
-                      <p className="text-gray-400 mt-1">
-                        (Top-up model) Fast charging: ~{plan.fastSessionsPerWeek} session(s)/week
-                      </p>
-                      <p className="text-gray-400">
-                        (Top-up model) Public/Work Level 2: ~{plan.publicL2SessionsPerWeek} session(s)/week
-                      </p>
-                    </>
-                  )}
-                </div>
-              )}
+              {/* Schedule Table */}
+              <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10">
+                <table className="min-w-[760px] w-full border-collapse">
+                  <thead className="bg-black/30">
+                    <tr>
+                      {["Day", "Start", "Out", "Back", "Fast", "Remain", "Overnight", "Next"].map((h) => (
+                        <th
+                          key={h}
+                          className="text-left text-xs tracking-widest text-gray-400 px-4 py-3 border-b border-white/10"
+                        >
+                          {h}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map((r) => (
+                      <tr key={r.dayIndex} className="border-b border-white/5">
+                        <td className="px-4 py-3 text-sm text-gray-200">{r.label}</td>
+                        <td className="px-4 py-3 text-sm text-gray-200">{r.startingMiles}</td>
+                        <td className="px-4 py-3 text-sm text-gray-200">{r.oneWayMiles}</td>
+                        <td className="px-4 py-3 text-sm text-gray-200">{r.returnMiles}</td>
+                        <td className="px-4 py-3 text-sm text-gray-200">
+                          {r.didFastCharge ? r.fastChargeMiles : ""}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-200">{r.remainingMiles}</td>
+                        <td className="px-4 py-3 text-sm text-gray-200">{r.overnightChargeMiles}</td>
+                        <td className="px-4 py-3 text-sm text-gray-200">{r.nextStartingMiles}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-              {/* Reset-to-full output */}
-              {resetPlan && (
-                <div className="mt-4 p-4 rounded-xl bg-black/30 border border-white/10 text-sm text-gray-300">
-                  <p>Overnight adds ~{resetPlan.overnightAdd} miles.</p>
-                  <p>Weekly miles driven: ~{resetPlan.weeklyNeed} miles.</p>
-                  <p>
-                    Full charge lasts ~{resetPlan.daysPerFullTank} day(s) on average (10 mi reserve).
+              {/* Quick insight summary from schedule */}
+              <div className="mt-5 p-4 rounded-2xl bg-black/30 border border-white/10 text-sm text-gray-300">
+                <p>
+                  Weekly miles driven: <span className="text-gray-100 font-semibold">{totals.weeklyNeed}</span>
+                </p>
+                <p>
+                  Week ends at: <span className="text-gray-100 font-semibold">{totals.endedWith}</span> miles (after overnight).
+                </p>
+                {totals.zeroDays > 0 ? (
+                  <p className="mt-2 text-yellow-300">
+                    You hit the reserve floor on {totals.zeroDays} drive day(s). Add fast-charge days or increase overnight charging.
                   </p>
-                  <p className="mt-2">
-                    Full-range resets needed:{" "}
-                    <span className="font-semibold">{resetPlan.fastResetsPerWeek}</span> fast charge
-                    session(s) per week
+                ) : (
+                  <p className="mt-2 text-green-400">
+                    Your schedule stays above reserve all week with this charging plan.
                   </p>
-                </div>
-              )}
+                )}
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
                 <button
