@@ -406,27 +406,26 @@ const showResult = step === "RESULT";
                   </p>
                 </div>
               )}
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+  <button
+    type="button"
+    disabled={!plan}
+    onClick={() => setStep("PLAN")}
+    className={`rounded-2xl border border-white/10 transition p-4 font-semibold
+      ${plan ? "hover:border-white/25 bg-white/10 hover:bg-white/15" : "opacity-50 cursor-not-allowed bg-white/5"}`}
+  >
+    Next →
+  </button>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-              <button
-               <button
-  type="button"
-  disabled={!plan}
-  onClick={() => setStep("PLAN")}
-  className={`rounded-2xl border border-white/10 transition p-4 font-semibold
-    ${plan ? "hover:border-white/25 bg-white/10 hover:bg-white/15" : "opacity-50 cursor-not-allowed bg-white/5"}`}
->
-  Next →
-</button>
-
-                <button
-                  type="button"
-                  onClick={() => setStep("Q2")}
-                  className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-                >
-                  ← Change plug type
-                </button>
-              </div>
+  <button
+    type="button"
+    onClick={() => setStep("Q2")}
+    className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+  >
+    ← Change plug type
+  </button>
+</div>
+            
             </div>
           )}
 {/* Plan page */}
