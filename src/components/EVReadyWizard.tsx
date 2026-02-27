@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 
-type Step = "Q1" | "Q2" | "MILES" | "PLAN";
+type Step = "Q1" | "Q2" | "MILES" | "PLAN" | "RESULT";
 type PlugAnswer = "yes" | "no" | null;
 type ChargeLevel = "L1" | "L2" | null;
 
@@ -427,7 +427,6 @@ const showPlan = step === "PLAN";
       This is what your routine requires vs what home charging can supply.
     </p>
 
-    {/* Weekly charging math box */}
     <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
       {plan ? (
         <>
@@ -447,12 +446,11 @@ const showPlan = step === "PLAN";
       )}
     </div>
 
-    {/* Buttons */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
       <button
         type="button"
         disabled={!result}
-        onClick={() => setShowFinalResult(false)}
+        onClick={() => setShowFinalResult(true)}
         className={`rounded-2xl border border-white/10 transition p-4 font-semibold
           ${result ? "hover:border-white/25 bg-white/10 hover:bg-white/15" : "opacity-50 cursor-not-allowed bg-white/5"}`}
       >
@@ -461,14 +459,16 @@ const showPlan = step === "PLAN";
 
       <button
         type="button"
-        onClick={() => setStep("MILES")}
+        onClick={() => {
+          setShowFinalResult(false);
+          setStep("MILES");
+        }}
         className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
       >
         ← Back to sliders
       </button>
     </div>
 
-    {/* Result appears BELOW, same page */}
     {showFinalResult && result && (
       <div className="mt-8">
         <div className="flex items-center justify-between gap-3 mb-4">
@@ -498,7 +498,7 @@ const showPlan = step === "PLAN";
             type="button"
             onClick={() => {
               setShowFinalResult(false);
-              setStep("PLAN");
+              setStep("MILES");
             }}
             className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/15 transition p-4 font-semibold"
           >
@@ -510,12 +510,7 @@ const showPlan = step === "PLAN";
   </div>
 )}
         
-  return (
-    <main className="min-h-screen bg-black text-white">
-      {/* ...all your JSX... */}
-    </main>
-  );
-} 
+
 
 function BigChoice({
   label,
