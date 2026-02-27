@@ -418,61 +418,7 @@ const showPlan = step === "PLAN";
             </div>
           )}
 
-"use client";
 
-import React, { useMemo, useState } from "react";
-
-type Step = "Q1" | "Q2" | "MILES" | "PLAN" | "RESULT";
-type PlugAnswer = "yes" | "no" | null;
-type ChargeLevel = "L1" | "L2" | null;
-
-function calcChargePlan(opts: {
-  weekdayMilesPerDrivingDay: number;
-  weekdayDrivingDaysPerWeek: number; // 0–5
-  weekendMilesTotal: number; // 0–100
-  homeLevel: "L1" | "L2";
-  weekdayOvernightHours?: number; // default 9
-  weekendOvernightHours?: number; // default 16 (up to 24)
-  l1MilesPerHour?: number; // default 4
-  l2MilesPerHour?: number; // default 25
-  weekdayNightsPluggedIn?: number; // default 5
-  weekendNightsPluggedIn?: number; // default 2
-}) {
-  const {
-    weekdayMilesPerDrivingDay,
-    weekdayDrivingDaysPerWeek,
-    weekendMilesTotal,
-    homeLevel,
-    weekdayOvernightHours = 9,
-    weekendOvernightHours = 16,
-    l1MilesPerHour = 4,
-    l2MilesPerHour = 25,
-    weekdayNightsPluggedIn = 5,
-    weekendNightsPluggedIn = 2,
-  } = opts;
-
-  const mph = homeLevel === "L1" ? l1MilesPerHour : l2MilesPerHour;
-
-  const weekdayOvernightMiles = mph * weekdayOvernightHours;
-  const weekendOvernightMiles = mph * weekendOvernightHours;
-
-  const weekdayNeed = weekdayMilesPerDrivingDay * weekdayDrivingDaysPerWeek;
-  const weeklyNeed = weekdayNeed + weekendMilesTotal;
-
-  const theoreticalSupply =
-    weekdayOvernightMiles * weekdayNightsPluggedIn +
-    weekendOvernightMiles * weekendNightsPluggedIn;
-
-  const weeklyHomeSupply = Math.min(weeklyNeed, theoreticalSupply);
-  const weeklyShortfall = Math.max(0, weeklyNeed - weeklyHomeSupply);
-
-  return {
-    mph: Math.round(mph),
-    weeklyNeed: Math.round(weeklyNeed),
-    weeklyHomeSupply: Math.round(weeklyHomeSupply),
-    weeklyShortfall: Math.round(weeklyShortfall),
-  };
-}
 
 // Full-reset model: how many “full-range resets” are needed.
 // We calculate by “capacity you can spend per reset” = (fullRange - reserve).
@@ -930,8 +876,6 @@ const showPlan = step === "PLAN";
   </div>
 )}
         
-
-
 function BigChoice({
   label,
   sub,
@@ -955,4 +899,3 @@ function BigChoice({
     </button>
   );
 }
-          
