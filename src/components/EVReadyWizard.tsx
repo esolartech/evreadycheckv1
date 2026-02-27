@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useMemo, useState } from "react";
 
 type Step = "Q1" | "Q2" | "MILES" | "PLAN" | "RESULT";
