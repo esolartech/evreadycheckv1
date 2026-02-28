@@ -495,21 +495,22 @@ const plan = useMemo(() => {
           <p>Weekly home energy supply: ~{plan.weeklyHomeSupply} miles.</p>
           <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
-         <div className="text-sm uppercase tracking-widest text-gray-400">
-  <span className="font-bold text-yellow-400">
-    FAST CHARGING
-  </span>{" "}
-  NEEDED
-</div>
-      
-        <div className="mt-2 text-3xl sm:text-4xl font-bold text-yellow-400">
-          {fastChargeSessions} session(s) / week
-        </div>
-      </div>
+          <div className="mt-6 text-center">
+            <div className="text-xs tracking-widest text-gray-400">
+              FAST CHARGING NEEDED
+            </div>
+
+            <div className="mt-2 text-3xl sm:text-4xl font-extrabold text-yellow-300">
+              <span className="font-extrabold">FAST CHARGING</span>:{" "}
+              {fastChargeSessions} session(s) / week
+            </div>
+          </div>
 
           {canPlug === "no" && (
-            <p className="mt-2 text-gray-400">
-              You don't have an Home/Work Outlet Charging — this assumes FAST CHARGING covers your weekly miles.
+            <p className="mt-4 text-gray-400">
+              You don't have an Home/Work Outlet Charging — this assumes{" "}
+              <span className="font-bold text-gray-200">FAST CHARGING</span>{" "}
+              covers your weekly miles.
             </p>
           )}
         </>
@@ -518,12 +519,13 @@ const plan = useMemo(() => {
       )}
     </div>
 
+    {/* ✅ ONLY one button, centered */}
     <div className="mt-7 flex justify-center">
       <button
         type="button"
         disabled={!result}
         onClick={() => setShowFinalResult(true)}
-        className={`px-10 rounded-2xl border border-white/10 transition p-4 font-semibold
+        className={`rounded-2xl border border-white/10 transition px-10 py-4 font-semibold
           ${
             result
               ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
@@ -532,8 +534,7 @@ const plan = useMemo(() => {
       >
         Show my result ↓
       </button>
-
-   </div>
+    </div>
 
     {showFinalResult && result && (
       <div className="mt-8">
@@ -572,12 +573,6 @@ const plan = useMemo(() => {
           </button>
         </div>
       </div>
-     )}
+    )}
   </div>
 )}
-
-        </div>
-      </div>
-    </main>
-  );
-}
