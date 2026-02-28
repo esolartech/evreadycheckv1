@@ -439,7 +439,7 @@ export default function EVReadyWizard() {
                   className={`rounded-2xl border border-white/10 transition p-4 font-semibold
                     ${
                       plan
-                        ? "hover:border-white/25 bg-white/10 hover:bg-white/15"
+                        ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
                         : "opacity-50 cursor-not-allowed bg-white/5"
                     }`}
                 >
