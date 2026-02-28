@@ -201,34 +201,34 @@ const plan = useMemo(() => {
 
     const routineMiles = weekdayMilesPerDay;
 
-    if (level === "L1") {
+ if (level === "L1") {
 
-  if (routineMiles <= 50) {
+  if (fastChargeSessions <= 1) {
     return {
       badge: "READY (L1)",
-      title: "✅ EV Ready (Level 1 works)",
+      title: "✅ EV Ready",
       color: "text-green-300",
-      subtitle: "Your weekday routine fits Level 1.",
-      body: "With a consistent plug, Level 1 can cover most low-mileage routines.",
+      subtitle: "Level 1 + minimal fast charging fits your routine.",
+      body: `You’ll need about ${fastChargeSessions} fast charge session per week. This is manageable and considered low friction.`,
     };
   }
 
-  if (routineMiles <= 120) {
+  if (fastChargeSessions === 2) {
     return {
       badge: "READY + PLAN",
-      title: "🟠 EV Ready (with a fast charging plan)",
+      title: "🟠 EV Ready (with a plan)",
       color: "text-orange-300",
-      subtitle: "Level 1 can work, but you’ll need backup charging.",
-      body: `Plan for about ${fastChargeSessions} fast charge session(s) per week. During heavier weeks, that could increase to ${fastChargeSessions + 1}.`,
+      subtitle: "You’ll rely on fast charging more consistently.",
+      body: `Plan for about ${fastChargeSessions} fast charge sessions per week. During heavier weeks, that could increase to ${fastChargeSessions + 1}.`,
     };
   }
 
   return {
     badge: "FAST-CHARGE DEPENDENT",
-    title: "🚨 High Friction Risk (Level 1)",
+    title: "🚨 Fast-Charge Dependent",
     color: "text-red-400",
-    subtitle: "Level 1 won’t keep up with this weekday pattern.",
-    body: `At this mileage, you’ll likely depend on fast charging frequently — about ${fastChargeSessions} session(s) per week — unless you upgrade to Level 2.`,
+    subtitle: "Frequent fast charging will be required.",
+    body: `You’ll likely need ${fastChargeSessions} fast charge sessions per week. At this frequency, charging becomes a lifestyle constraint unless you upgrade to Level 2.`,
   };
 }
 
