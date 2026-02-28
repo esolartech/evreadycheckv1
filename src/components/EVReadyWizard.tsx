@@ -297,8 +297,7 @@ export default function EVReadyWizard() {
 
       <div className="max-w-2xl mx-auto px-5 py-10">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 mb-8">
-          <div>
+        <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-2">
               The EV Reality Check
             </h1>
@@ -308,16 +307,7 @@ export default function EVReadyWizard() {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={reset}
-            className="text-sm text-gray-300 hover:text-white border border-white/10 hover:border-white/20 px-3 py-2 rounded-lg"
-          >
-            Reset
-          </button>
-        </div>
-
-        {/* Main card */}
+                 {/* Main card */}
         <div className="bg-gray-900/70 backdrop-blur border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
           {/* Q1 */}
           {step === "Q1" && (
