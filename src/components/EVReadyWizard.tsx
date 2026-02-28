@@ -495,8 +495,8 @@ const plan = useMemo(() => {
           <p>Weekly home energy supply: ~{plan.weeklyHomeSupply} miles.</p>
           <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
-               <div className="mt-6 text-center">
-  <div className="text-3xl sm:text-4xl font-extrabold text-yellow-400">
+     <div className="mt-6 text-center">
+  <div className="text-3xl sm:text-4xl font-extrabold text-yellow-400 whitespace-nowrap">
     FAST CHARGING: {fastChargeSessions} session(s) / week
   </div>
 </div>
