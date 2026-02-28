@@ -576,6 +576,7 @@ const plan = useMemo(() => {
           </button>
         </div>
       </div>
-    )}
-  </div>
-)}
+    </div>
+  </main>
+);
+}
