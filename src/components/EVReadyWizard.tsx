@@ -481,32 +481,26 @@ const plan = useMemo(() => {
     </div>
   </div>
 )}
-
 {showPlan && (
   <div className="animate-[fadeIn_240ms_ease-out]">
-    <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
+    <h2 className="text-2xl sm:text-3xl font-semibold leading-tight text-center">
       Here’s your weekly charging math
     </h2>
 
-    <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
+    <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300 text-center">
       {plan ? (
         <>
           <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
-          <p>Weekly home energy supply: ~{plan.weeklyHomeSupply} miles.</p>
+          <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
           <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
- <div className="mt-8 flex justify-center">
-  <div className="max-w-xl text-3xl sm:text-4xl font-extrabold text-yellow-400 text-center">
-    FAST CHARGING: {fastChargeSessions} session(s) / week
-  </div>
-</div>
-          
+          <p className="mt-5 text-2xl font-extrabold text-white">
+            FAST CHARGING: {fastChargeSessions} / week
+          </p>
 
           {canPlug === "no" && (
-            <p className="mt-4 text-gray-400">
-              You don't have an Home/Work Outlet Charging — this assumes{" "}
-              <span className="font-bold text-gray-200">FAST CHARGING</span>{" "}
-              covers your weekly miles.
+            <p className="mt-2 text-gray-400">
+              No overnight plug selected — this assumes fast charging covers your weekly miles.
             </p>
           )}
         </>
@@ -515,7 +509,6 @@ const plan = useMemo(() => {
       )}
     </div>
 
-    {/* ✅ ONLY one button, centered */}
     <div className="mt-7 flex justify-center">
       <button
         type="button"
@@ -532,36 +525,37 @@ const plan = useMemo(() => {
       </button>
     </div>
 
-          {showFinalResult && result && (
-            <div className="mt-8">
-              <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
-                {result.badge}
-              </span>
+    {showFinalResult && result && (
+      <div className="mt-8 text-center">
+        <div className="flex justify-center">
+          <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
+            {result.badge}
+          </span>
+        </div>
 
-              <h2 className={`mt-4 text-3xl sm:text-4xl font-bold ${result.color}`}>
-                {result.title}
-              </h2>
+        <h2 className={`mt-4 text-3xl sm:text-4xl font-bold ${result.color}`}>
+          {result.title}
+        </h2>
+        <p className="text-gray-200 mt-3 text-lg">{result.subtitle}</p>
 
-              <p className="text-gray-200 mt-3 text-lg">
-                {result.subtitle}
-              </p>
+        <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10 inline-block text-left">
+          <p className="text-sm text-gray-400 mb-2">What this means</p>
+          <p className="text-gray-200">{result.body}</p>
+        </div>
 
-              <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
-                <p className="text-sm text-gray-400 mb-2">What this means</p>
-                <p className="text-gray-200">{result.body}</p>
-              </div>
-
-              <div className="mt-7 flex justify-center">
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition px-10 py-4 font-semibold"
-                >
-                  Start over
-                </button>
-              </div>
-            </div>
-          )}
+        <div className="mt-7 flex justify-center">
+          <button
+            type="button"
+            onClick={reset}
+            className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition px-10 py-4 font-semibold"
+          >
+            Start over
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+)}
         </div>  
       </div>     
     </main>
