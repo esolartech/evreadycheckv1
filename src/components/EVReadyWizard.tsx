@@ -261,6 +261,11 @@ const plan = useMemo(() => {
   const showMiles = step === "MILES";
   const showPlan = step === "PLAN";
 
+  
+       const weeklyNeed = useMemo(() => {
+  return weekdayMilesPerDay * weekdayDrivingDays + weekendMiles;
+}, [weekdayMilesPerDay, weekdayDrivingDays, weekendMiles]);
+
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_50%),radial-gradient(ellipse_at_bottom,rgba(34,197,94,0.10),transparent_45%)]" />
@@ -474,9 +479,7 @@ const plan = useMemo(() => {
             </div>
           )}
           
-     const weeklyNeed = useMemo(() => {
-  return weekdayMilesPerDay * weekdayDrivingDays + weekendMiles;
-}, [weekdayMilesPerDay, weekdayDrivingDays, weekendMiles]);
+
 
           
 {showPlan && (
