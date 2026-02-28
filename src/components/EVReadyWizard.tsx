@@ -351,11 +351,11 @@ export default function EVReadyWizard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
                 <BigChoice
                   label="Level 1 (120V)"
-                  sub="Standard household outlet."
+                  sub="Standard household outlet / 120V."
                   onClick={() => onQ2("L1")}
                 />
                 <BigChoice
-                  label="Level 2"
+                  label="Level 2 (240V)"
                   sub="Dedicated EV charging / 240V."
                   onClick={() => onQ2("L2")}
                 />
@@ -494,13 +494,13 @@ export default function EVReadyWizard() {
 
                     <div className="mt-6 text-center">
                  <div className="text-center text-yellow-300">
-  <div className="text-3xl sm:text-4xl font-black tracking-wide">
-    FAST CHARGING:
-  </div>
-  <div className="text-3xl sm:text-4xl font-bold mt-2">
-    {fastChargeSessions} session(s) / week
-  </div>
-</div>
+                  <div className="text-3xl sm:text-4xl font-black tracking-wide">
+                      DC FAST CHARGING:
+                    </div>
+                    <div className="text-3xl sm:text-4xl font-bold mt-2">
+                      {fastChargeSessions} session(s) / week
+                    </div>
+                </div>
                     </div>
 
                     
