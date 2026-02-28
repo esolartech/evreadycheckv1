@@ -143,28 +143,45 @@ export default function EVReadyWizard() {
     return Number((fullRange / Math.max(milesPerKwh, 0.1)).toFixed(1));
   }, [fullRange, milesPerKwh]);
 
-  const plan =
-    canPlug === "yes" && level
-      ? calcChargePlan({
-          weekdayMilesPerDrivingDay: weekdayMilesPerDay,
-          weekdayDrivingDaysPerWeek: weekdayDrivingDays,
-          weekendMilesTotal: weekendMiles,
-          homeLevel: level,
-          weekdayOvernightHours: weekdayChargeHours,
-          weekendOvernightHours: weekendChargeHours,
-          weekdayNightsPluggedIn: 5,
-          weekendNightsPluggedIn: 2,
-        })
-      : null;
+const plan = useMemo(() => {
+  // ✅ No overnight plug: assume 0 home supply
+  if (canPlug === "no") {
+    return {
+      mph: 0, // not applicable
+      weeklyNeed: Math.round(weeklyNeed),
+      weeklyHomeSupply: 0,
+      weeklyShortfall: Math.round(weeklyNeed),
+    };
+  }
 
-  const fastChargeSessions =
-    plan && canPlug === "yes"
-      ? calcFastChargeSessionsForShortfall(
-          plan.weeklyShortfall,
-          fullRange,
-          reserveMiles
-        )
-      : 0;
+  // ✅ Yes overnight plug: use your existing home logic
+  if (canPlug === "yes" && level) {
+    return calcChargePlan({
+      weekdayMilesPerDrivingDay: weekdayMilesPerDay,
+      weekdayDrivingDaysPerWeek: weekdayDrivingDays,
+      weekendMilesTotal: weekendMiles,
+      homeLevel: level,
+      weekdayOvernightHours: weekdayChargeHours,
+      weekendOvernightHours: weekendChargeHours,
+      weekdayNightsPluggedIn: 5,
+      weekendNightsPluggedIn: 2,
+    });
+  }
+
+  return null;
+}, [
+  canPlug,
+  level,
+  weeklyNeed,
+  weekdayMilesPerDay,
+  weekdayDrivingDays,
+  weekendMiles,
+  weekdayChargeHours,
+  weekendChargeHours,
+]);
+
+ const fastChargeSessions =
+  plan ? calcFastChargeSessionsForShortfall(plan.weeklyShortfall, fullRange, reserveMiles) : 0;
 
   const result = useMemo(() => {
     if (canPlug === "no") {
@@ -232,7 +249,7 @@ export default function EVReadyWizard() {
   const onQ1 = (ans: "yes" | "no") => {
     setCanPlug(ans);
     setShowFinalResult(false);
-    setStep(ans === "no" ? "PLAN" : "Q2");
+    setStep(ans === "no" ? "MILES" : "Q2");
   };
 
   const onQ2 = (ans: "L1" | "L2") => {
@@ -456,45 +473,45 @@ export default function EVReadyWizard() {
               </div>
             </div>
           )}
-     
-    {showPlan && (
+          
+     const weeklyNeed = useMemo(() => {
+  return weekdayMilesPerDay * weekdayDrivingDays + weekendMiles;
+}, [weekdayMilesPerDay, weekdayDrivingDays, weekendMiles]);
+
+          
+{showPlan && (
   <div className="animate-[fadeIn_240ms_ease-out]">
     <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
       Here’s your weekly charging math
     </h2>
 
-    {canPlug === "no" ? (
-      <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
-        <p className="text-gray-200 font-semibold">
-          You don’t have an overnight charging anchor.
-        </p>
-        <p className="mt-2 text-gray-400">
-          That usually means higher friction. Before buying, aim to lock in at
-          least one consistent anchor: workplace charging, a nearby reliable
-          Level 2, or guaranteed home parking access.
-        </p>
-      </div>
-    ) : (
-      <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
-        {plan ? (
-          <>
-            <p>Charging speed: ~{plan.mph} miles/hour.</p>
-            <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
-            <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
-            <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
-            <p className="mt-4">
-              <span className="text-gray-200 font-semibold">
-                Fast charge: {fastChargeSessions} session(s) / week
-              </span>
-            </p>
-          </>
-        ) : (
-          <p className="text-gray-400">
-            Set your inputs first (and choose a plug type).
+    <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
+      {plan ? (
+        <>
+          <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
+          <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
+          <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
+
+          <p className="mt-4">
+            <span className="text-gray-200 font-semibold">
+              Fast charge: {fastChargeSessions} session(s) / week
+            </span>
           </p>
-        )}
-      </div>
-    )}
+
+          {canPlug === "no" && (
+            <p className="mt-2 text-gray-400">
+              No overnight plug selected — this assumes fast charging covers your weekly miles.
+            </p>
+          )}
+        </>
+      ) : (
+        <p className="text-gray-400">Set your inputs first.</p>
+      )}
+    </div>
+
+    {/* keep your buttons + showFinalResult below here */}
+  </div>
+)}
 
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
       <button
