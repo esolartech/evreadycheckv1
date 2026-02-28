@@ -495,11 +495,15 @@ const plan = useMemo(() => {
           <p>Weekly home energy supply: ~{plan.weeklyHomeSupply} miles.</p>
           <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
-          <p className="mt-4">
-            <span className="text-gray-200 font-semibold">
-              Fast charge: {fastChargeSessions} session(s) / week
-            </span>
-          </p>
+            <div className="mt-6 text-center">
+        <div className="text-sm uppercase tracking-widest text-gray-400">
+          Fast charging needed
+        </div>
+      
+        <div className="mt-2 text-3xl sm:text-4xl font-bold text-yellow-400">
+          {fastChargeSessions} session(s) / week
+        </div>
+      </div>
 
           {canPlug === "no" && (
             <p className="mt-2 text-gray-400">
