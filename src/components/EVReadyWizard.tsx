@@ -456,32 +456,48 @@ export default function EVReadyWizard() {
               </div>
             </div>
           )}
+      {showPlan && (
+  <div className="animate-[fadeIn_240ms_ease-out]">
+    <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
+      Here’s your weekly charging math
+    </h2>
 
-          {showPlan && (
-            <div className="animate-[fadeIn_240ms_ease-out]">
-              <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
-                Here’s your weekly charging math
-              </h2>
+    {canPlug === "no" ? (
+      <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
+        <p className="text-gray-200 font-semibold">
+          You don’t have an overnight charging anchor.
+        </p>
+        <p className="mt-2 text-gray-400">
+          That usually means higher friction. Before buying, aim to lock in at
+          least one consistent anchor: workplace charging, a nearby reliable
+          Level 2, or guaranteed home parking access.
+        </p>
+      </div>
+    ) : (
+      <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
+        {plan ? (
+          <>
+            <p>Charging speed: ~{plan.mph} miles/hour.</p>
+            <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
+            <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
+            <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
+            <p className="mt-4">
+              <span className="text-gray-200 font-semibold">
+                Fast charge: {fastChargeSessions} session(s) / week
+              </span>
+            </p>
+          </>
+        ) : (
+          <p className="text-gray-400">
+            Set your inputs first (and choose a plug type).
+          </p>
+        )}
+      </div>
+    )}
 
-              <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10 text-sm text-gray-300">
-                {plan ? (
-                  <>
-                    <p>Charging speed: ~{plan.mph} miles/hour.</p>
-                    <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
-                    <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
-                    <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
-                    <p className="mt-4">
-                      <span className="text-gray-200 font-semibold">
-                        Fast charge: {fastChargeSessions} session(s) / week
-                      </span>
-                    </p>
-                  </>
-                ) : (
-                  <p className="text-gray-400">
-                    Set your inputs first (and choose a plug type).
-                  </p>
-                )}
-              </div>
+    {/* Buttons below stay unchanged */}
+  </div>
+)}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
                 <button
