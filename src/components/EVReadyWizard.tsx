@@ -251,8 +251,13 @@ const plan = useMemo(() => {
   const onQ1 = (ans: "yes" | "no") => {
     setCanPlug(ans);
     setShowFinalResult(false);
-    setStep(ans === "no" ? "MILES" : "Q2");
-  };
+   if (ans === "no") {
+    setWeekendChargeHours(0); // optional
+    setStep("MILES");
+  } else {
+    setStep("Q2");
+  }
+};
 
   const onQ2 = (ans: "L1" | "L2") => {
     setLevel(ans);
@@ -438,20 +443,19 @@ const plan = useMemo(() => {
                 />
               </SliderCard>
 
-              <SliderCard
-                title="Weekend charging hours"
-                valueRight={weekendChargeHours}
-              >
-                <input
-                  type="range"
-                  min={0}
-                  max={24}
-                  step={1}
-                  value={weekendChargeHours}
-                  onChange={(e) => setWeekendChargeHours(Number(e.target.value))}
-                  className="w-full"
-                />
-              </SliderCard>
+              {canPlug !== "no" && (
+            <SliderCard title="Weekend charging hours" valueRight={weekendChargeHours}>
+              <input
+                type="range"
+                min={0}
+                max={24}
+                step={1}
+                value={weekendChargeHours}
+                onChange={(e) => setWeekendChargeHours(Number(e.target.value))}
+                className="w-full"
+              />
+            </SliderCard>
+          )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
                 <button
