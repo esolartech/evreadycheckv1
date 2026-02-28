@@ -187,9 +187,7 @@ export default function EVReadyWizard() {
     ? calcFastChargeSessionsForShortfall(plan.weeklyShortfall, fullRange, reserveMiles)
     : 0;
 
-  const result = useMemo(() => {
-    const coldWeatherNote =
-      "Cold Weather Considerations: Be aware that electric car range can decrease by 15–30% in cold winter conditions.";
+ 
 
     // If NO overnight plug, always Level 0
     if (canPlug === "no") {
@@ -509,6 +507,24 @@ export default function EVReadyWizard() {
                       </div>
                     </div>
 
+                    
+                    <p className="mt-4">
+                <span className="text-gray-200 font-semibold">
+                  Fast charge: {fastChargeSessions} session(s) / week
+                </span>
+              </p>
+              
+              <div className="mt-6 p-4 rounded-xl bg-blue-950/40 border border-blue-400/20 text-sm text-blue-200">
+                <p className="font-semibold mb-1">
+                  ❄ Cold Weather Impact
+                </p>
+                <p>
+                  Be aware that electric vehicle range can decrease by
+                  <span className="font-semibold"> 15–30% </span>
+                  in cold winter conditions.
+                </p>
+              </div>
+
                     {canPlug === "no" && (
                       <p className="mt-4 text-gray-400">
                         You don’t have an Home/Work Outlet Charging — this assumes{" "}
@@ -553,11 +569,6 @@ export default function EVReadyWizard() {
                   <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
                     <p className="text-sm text-gray-400 mb-2">What this means</p>
                     <p className="text-gray-200">{result.body}</p>
-
-                    <div className="mt-4 text-sm text-gray-400">
-                      <span className="text-gray-200 font-semibold">Cold Weather Considerations:</span>{" "}
-                      Be aware that electric car range can decrease by 15–30% in cold winter conditions.
-                    </div>
                   </div>
 
                   <div className="mt-7 flex justify-center">
