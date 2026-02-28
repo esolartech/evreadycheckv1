@@ -202,32 +202,35 @@ const plan = useMemo(() => {
     const routineMiles = weekdayMilesPerDay;
 
     if (level === "L1") {
-      if (routineMiles <= 50) {
-        return {
-          badge: "READY (L1)",
-          title: "✅ EV Ready (Level 1 works)",
-          color: "text-green-300",
-          subtitle: "Your weekday routine fits Level 1.",
-          body: "With a consistent plug, Level 1 can cover most low-mileage routines.",
-        };
-      }
-      if (routineMiles <= 120) {
-        return {
-          badge: "READY + PLAN",
-          title: "🟠 EV Ready (with a fast charging plan)",
-          color: "text-orange-300",
-          subtitle: "Level 1 can work, but you’ll need backup charging.",
-         body: `Plan for about ${fastChargeSessions} fast charge session(s) per week. During heavier weeks, that could increase to ${fastChargeSessions + 1}.`,
-        };
-      }
-      return {
-        badge: "FAST-CHARGE DEPENDENT",
-        title: "🚨 High Friction Risk (Level 1)",
-        color: "text-red-400",
-        subtitle: "Level 1 won’t keep up with this weekday pattern.",
-        body: `At this mileage, you’ll depend on fast charging frequently, atleast, ${fastChargeSessions} fast charge session(s) per week, unless you upgrade to Level 2.`,
-      };
-    }
+
+  if (routineMiles <= 50) {
+    return {
+      badge: "READY (L1)",
+      title: "✅ EV Ready (Level 1 works)",
+      color: "text-green-300",
+      subtitle: "Your weekday routine fits Level 1.",
+      body: "With a consistent plug, Level 1 can cover most low-mileage routines.",
+    };
+  }
+
+  if (routineMiles <= 120) {
+    return {
+      badge: "READY + PLAN",
+      title: "🟠 EV Ready (with a fast charging plan)",
+      color: "text-orange-300",
+      subtitle: "Level 1 can work, but you’ll need backup charging.",
+      body: `Plan for about ${fastChargeSessions} fast charge session(s) per week. During heavier weeks, that could increase to ${fastChargeSessions + 1}.`,
+    };
+  }
+
+  return {
+    badge: "FAST-CHARGE DEPENDENT",
+    title: "🚨 High Friction Risk (Level 1)",
+    color: "text-red-400",
+    subtitle: "Level 1 won’t keep up with this weekday pattern.",
+    body: `At this mileage, you’ll likely depend on fast charging frequently — about ${fastChargeSessions} session(s) per week — unless you upgrade to Level 2.`,
+  };
+}
 
     if (routineMiles <= 200) {
       return {
