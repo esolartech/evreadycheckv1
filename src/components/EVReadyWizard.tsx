@@ -457,21 +457,22 @@ const plan = useMemo(() => {
             </SliderCard>
           )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-                <button
-                  type="button"
-                  disabled={!plan}
-                  onClick={() => setStep("PLAN")}
-                  className={`rounded-2xl border border-white/10 transition p-4 font-semibold
-                    ${
-                      plan
-                        ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
-                        : "opacity-50 cursor-not-allowed bg-white/5"
-                    }`}
-                >
-                  Next →
-                </button>
-canPlug === "no" ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+  <button
+    type="button"
+    disabled={!plan}
+    onClick={() => setStep("PLAN")}
+    className={`rounded-2xl border border-white/10 transition p-4 font-semibold
+      ${
+        plan
+          ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
+          : "opacity-50 cursor-not-allowed bg-white/5"
+      }`}
+  >
+    Next →
+  </button>
+
+  {canPlug === "no" ? (
     <button
       type="button"
       onClick={reset}
@@ -480,16 +481,15 @@ canPlug === "no" ? (
       ↺ Reset
     </button>
   ) : (
-                <button
-                  type="button"
-                  onClick={() => setStep("Q2")}
-                  className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-                >
-                  ← Change plug type
-                </button>
-              </div>
-            </div>
-          )}
+    <button
+      type="button"
+      onClick={() => setStep("Q2")}
+      className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+    >
+      ← Change plug type
+    </button>
+  )}
+</div>
           
 {showPlan && (
   <div className="animate-[fadeIn_240ms_ease-out]">
