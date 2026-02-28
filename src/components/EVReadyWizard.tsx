@@ -556,19 +556,7 @@ const plan = useMemo(() => {
           >
             Start over
           </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setShowFinalResult(false);
-              setStep("MILES");
-            }}
-            className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/[0.15] transition p-4 font-semibold"
-          >
-            ← Adjust my inputs
-          </button>
         </div>
-      </div>
     )}
   </div>
 )}
