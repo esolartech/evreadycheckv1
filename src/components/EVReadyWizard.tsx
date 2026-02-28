@@ -339,11 +339,7 @@ export default function EVReadyWizard() {
               </p>
 
               <SliderCard title="Full range when charged" valueRight={fullRange}>
-                <div className="text-xs text-gray-400 mb-3">
-                  Estimated battery size:{" "}
-                  <span className="text-gray-200 font-semibold">
-                    {estBatteryKwh} kWh
-                  </span>
+               
                 </div>
                 <input
                   type="range"
@@ -369,7 +365,11 @@ export default function EVReadyWizard() {
                   onChange={(e) => setMilesPerKwh(Number(e.target.value))}
                   className="w-full"
                 />
-                
+             <div className="text-xs text-gray-400 mb-3">
+                  Estimated battery size:{" "}
+                  <span className="text-gray-200 font-semibold">
+                    {estBatteryKwh} kWh
+                  </span>                
               </SliderCard>
               
               <SliderCard
