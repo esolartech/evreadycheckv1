@@ -279,12 +279,15 @@ const plan = useMemo(() => {
         <div className="flex items-start justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              areyouready4anEV
-            </h1>
-            <p className="text-gray-400 mt-2">
-              Range isn’t the hard part.{" "}
-              <span className="text-gray-200">Charging fit</span> is.
-            </p>
+            The EV Reality Check
+         <h2 className="text-2xl sm:text-3xl font-semibold leading-tight mt-8">
+          Can you plug in at home?
+          </h2>
+
+        <p className="text-gray-400 mt-3">
+        Overnight charging changes everything. If you can wake up to a full battery,
+        you're already ahead.
+          </p>
           </div>
 
           <button
