@@ -342,9 +342,11 @@ export default function EVReadyWizard() {
               <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
                 What kind of plug is it?
               </h2>
-              <p className="text-gray-400 mt-3">
-                Level 1 = standard 120V outlet (~3–5 miles/hour). Level 2 = dedicated faster charging.
-              </p>
+           <p className="text-gray-400 mt-3">
+            Level 1 = standard 120V outlet (~3–5 miles/hour).
+          <br />
+          Level 2 = 240V outlet (~12–80 miles/hour).
+          </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
                 <BigChoice
