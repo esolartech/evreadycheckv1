@@ -512,7 +512,7 @@ const plan = useMemo(() => {
       )}
     </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+    <div className="mt-7 flex justify-center">
       <button
         type="button"
         disabled={!result}
