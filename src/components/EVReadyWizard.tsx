@@ -143,18 +143,20 @@ export default function EVReadyWizard() {
     return Number((fullRange / Math.max(milesPerKwh, 0.1)).toFixed(1));
   }, [fullRange, milesPerKwh]);
 
+         const weeklyNeed = useMemo(() => {
+  return weekdayMilesPerDay * weekdayDrivingDays + weekendMiles;
+}, [weekdayMilesPerDay, weekdayDrivingDays, weekendMiles]);
+
 const plan = useMemo(() => {
-  // ✅ No overnight plug: assume 0 home supply
   if (canPlug === "no") {
     return {
-      mph: 0, // not applicable
+      mph: 0,
       weeklyNeed: Math.round(weeklyNeed),
       weeklyHomeSupply: 0,
       weeklyShortfall: Math.round(weeklyNeed),
     };
   }
 
-  // ✅ Yes overnight plug: use your existing home logic
   if (canPlug === "yes" && level) {
     return calcChargePlan({
       weekdayMilesPerDrivingDay: weekdayMilesPerDay,
@@ -262,9 +264,7 @@ const plan = useMemo(() => {
   const showPlan = step === "PLAN";
 
   
-       const weeklyNeed = useMemo(() => {
-  return weekdayMilesPerDay * weekdayDrivingDays + weekendMiles;
-}, [weekdayMilesPerDay, weekdayDrivingDays, weekendMiles]);
+
 
   return (
     <main className="min-h-screen bg-black text-white">
