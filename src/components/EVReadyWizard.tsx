@@ -214,10 +214,10 @@ const plan = useMemo(() => {
       if (routineMiles <= 120) {
         return {
           badge: "READY + PLAN",
-          title: "🟠 EV Ready (with a plan)",
+          title: "🟠 EV Ready (with a fast charging plan)",
           color: "text-orange-300",
           subtitle: "Level 1 can work, but you’ll need backup charging.",
-          body: "Expect occasional fast charging or public/work Level 2 when you have heavier weeks.",
+         body: `Plan for about ${fastChargeSessions} fast charge session(s) per week. During heavier weeks, that could increase to ${fastChargeSessions + 1}.`,
         };
       }
       return {
@@ -225,7 +225,7 @@ const plan = useMemo(() => {
         title: "🚨 High Friction Risk (Level 1)",
         color: "text-red-400",
         subtitle: "Level 1 won’t keep up with this weekday pattern.",
-        body: "At this mileage, you’ll depend on fast charging frequently unless you upgrade to Level 2.",
+        body: "At this mileage, you’ll depend on fast charging frequently, atleast, ${fastChargeSessions} fast charge session(s) per week, unless you upgrade to Level 2.",
       };
     }
 
