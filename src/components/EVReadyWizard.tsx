@@ -548,15 +548,15 @@ const plan = useMemo(() => {
           <p className="text-gray-200">{result.body}</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-          <button
-            type="button"
-            onClick={reset}
-            className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-          >
-            Start over
-          </button>
-        </div>
+        <div className="mt-7 flex justify-center">
+  <button
+    type="button"
+    onClick={reset}
+    className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition px-10 py-4 font-semibold"
+  >
+    Start over
+  </button>
+</div>
     )}
   </div>
 )}
