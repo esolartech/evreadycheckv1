@@ -219,7 +219,7 @@ const plan = useMemo(() => {
       title: "🟠 EV Ready (with a plan)",
       color: "text-orange-300",
       subtitle: "You’ll rely on fast charging more consistently.",
-      body: `Plan for about ${fastChargeSessions} fast charge sessions per week. During heavier weeks, that could increase to ${fastChargeSessions + 1}.`,
+      body: `Plan for about ${fastChargeSessions} fast charge sessions per week. During heavier driving weeks, that could increase to ${fastChargeSessions + 1}.`,
     };
   }
 
