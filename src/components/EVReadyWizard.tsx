@@ -517,7 +517,7 @@ const plan = useMemo(() => {
         type="button"
         disabled={!result}
         onClick={() => setShowFinalResult(true)}
-        className={`rounded-2xl border border-white/10 transition p-4 font-semibold
+        className={`w-full rounded-2xl border border-white/10 transition p-4 font-semibold
           ${
             result
               ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
@@ -527,14 +527,7 @@ const plan = useMemo(() => {
         Show my result ↓
       </button>
 
-    <button
-  type="button"
-  onClick={reset}
-  className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
->
-  ← Back to start
-</button>
-    </div>
+   </div>
 
     {showFinalResult && result && (
       <div className="mt-8">
