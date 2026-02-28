@@ -492,7 +492,7 @@ const plan = useMemo(() => {
       {plan ? (
         <>
           <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
-          <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
+          <p>Weekly home energy supply: ~{plan.weeklyHomeSupply} miles.</p>
           <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
           <p className="mt-4">
@@ -503,7 +503,7 @@ const plan = useMemo(() => {
 
           {canPlug === "no" && (
             <p className="mt-2 text-gray-400">
-              No overnight plug selected — this assumes fast charging covers your weekly miles.
+              You don't have an Home/Work Outlet Charging — this assumes FAST CHARGING covers your weekly miles.
             </p>
           )}
         </>
