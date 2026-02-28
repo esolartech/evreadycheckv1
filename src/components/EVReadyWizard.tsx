@@ -479,9 +479,6 @@ const plan = useMemo(() => {
             </div>
           )}
           
-
-
-          
 {showPlan && (
   <div className="animate-[fadeIn_240ms_ease-out]">
     <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
@@ -512,10 +509,7 @@ const plan = useMemo(() => {
       )}
     </div>
 
-    {/* keep your buttons + showFinalResult below here */}
-  </div>
-)}
-
+    {/* ✅ Buttons MUST be inside showPlan */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
       <button
         type="button"
@@ -543,6 +537,7 @@ const plan = useMemo(() => {
       </button>
     </div>
 
+    {/* ✅ Final result MUST also be inside showPlan */}
     {showFinalResult && result && (
       <div className="mt-8">
         <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
@@ -583,8 +578,4 @@ const plan = useMemo(() => {
     )}
   </div>
 )}
-        </div>
-      </div>
-    </main>
-  );
-}
+
