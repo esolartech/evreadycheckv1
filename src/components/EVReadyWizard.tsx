@@ -357,6 +357,22 @@ export default function EVReadyWizard() {
               </SliderCard>
 
               <SliderCard
+                title="Efficiency (miles per kWh)"
+                valueRight={milesPerKwh.toFixed(1)}
+              >
+                <input
+                  type="range"
+                  min={2.0}
+                  max={4.5}
+                  step={0.1}
+                  value={milesPerKwh}
+                  onChange={(e) => setMilesPerKwh(Number(e.target.value))}
+                  className="w-full"
+                />
+                
+              </SliderCard>
+              
+              <SliderCard
                 title="Weekday miles per driving day (Mon–Fri)"
                 valueRight={weekdayMilesPerDay}
               >
@@ -409,21 +425,6 @@ export default function EVReadyWizard() {
                   step={1}
                   value={weekendChargeHours}
                   onChange={(e) => setWeekendChargeHours(Number(e.target.value))}
-                  className="w-full"
-                />
-              </SliderCard>
-
-              <SliderCard
-                title="Efficiency (miles per kWh)"
-                valueRight={milesPerKwh.toFixed(1)}
-              >
-                <input
-                  type="range"
-                  min={2.0}
-                  max={4.5}
-                  step={0.1}
-                  value={milesPerKwh}
-                  onChange={(e) => setMilesPerKwh(Number(e.target.value))}
                   className="w-full"
                 />
               </SliderCard>
