@@ -494,12 +494,30 @@ const plan = useMemo(() => {
       {plan ? (
         <>
           <p>Weekly miles driven: ~{plan.weeklyNeed} miles.</p>
-          <p>Weekly home supply: ~{plan.weeklyHomeSupply} miles.</p>
+          <p>Weekly home energy supply: ~{plan.weeklyHomeSupply} miles.</p>
           <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
           <p className="mt-5 text-2xl font-extrabold text-white">
             FAST CHARGING: {fastChargeSessions} / week
           </p>
+
+          <p className="mt-4">
+  <span className="text-gray-200 font-semibold">
+    Fast charge: {fastChargeSessions} session(s) / week
+  </span>
+</p>
+
+<div className="mt-6 p-4 rounded-xl bg-blue-950/40 border border-blue-400/20 text-sm text-blue-200">
+  <p className="font-semibold mb-1">
+    ❄ Cold Weather Impact
+  </p>
+  <p>
+    Be aware that electric vehicle range can decrease by
+    <span className="font-semibold"> 15–30% </span>
+    in cold winter conditions.
+  </p>
+</div>
+          
 
           {canPlug === "no" && (
             <p className="mt-2 text-gray-400">
