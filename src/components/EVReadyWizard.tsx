@@ -499,7 +499,7 @@ const plan = useMemo(() => {
               <span className="font-extrabold">FAST CHARGING</span>:{" "}
               {fastChargeSessions} session(s) / week
             </div>
-          </div>
+          
 
           {canPlug === "no" && (
             <p className="mt-4 text-gray-400">
