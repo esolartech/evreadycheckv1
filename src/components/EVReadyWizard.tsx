@@ -471,7 +471,15 @@ const plan = useMemo(() => {
                 >
                   Next →
                 </button>
-
+canPlug === "no" ? (
+    <button
+      type="button"
+      onClick={reset}
+      className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+    >
+      ↺ Reset
+    </button>
+  ) : (
                 <button
                   type="button"
                   onClick={() => setStep("Q2")}
