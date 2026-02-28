@@ -268,10 +268,7 @@ const plan = useMemo(() => {
   const showMiles = step === "MILES";
   const showPlan = step === "PLAN";
 
-  
-
-
-  return (
+    return (
     <main className="min-h-screen bg-black text-white">
       <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_50%),radial-gradient(ellipse_at_bottom,rgba(34,197,94,0.10),transparent_45%)]" />
 
@@ -355,141 +352,136 @@ const plan = useMemo(() => {
             </div>
           )}
 
-          {showMiles && (
-            <div className="animate-[fadeIn_240ms_ease-out]">
-              <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
-                What’s your driving pattern?
-              </h2>
-              <p className="text-gray-400 mt-3">
-                We’ll calculate weekday + weekend miles and account for longer
-                weekend charging.
-              </p>
+{showMiles && (
+  <div className="animate-[fadeIn_240ms_ease-out]">
+    <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
+      What’s your driving pattern?
+    </h2>
+    <p className="text-gray-400 mt-3">
+      We’ll calculate weekday + weekend miles and account for longer weekend
+      charging.
+    </p>
 
-              <SliderCard title="Full range when charged" valueRight={fullRange}>
-               
-               
-                <input
-                  type="range"
-                  min={150}
-                  max={400}
-                  step={10}
-                  value={fullRange}
-                  onChange={(e) => setFullRange(Number(e.target.value))}
-                  className="w-full"
-                />
-              </SliderCard>
+    <SliderCard title="Full range when charged" valueRight={fullRange}>
+      <input
+        type="range"
+        min={150}
+        max={400}
+        step={10}
+        value={fullRange}
+        onChange={(e) => setFullRange(Number(e.target.value))}
+        className="w-full"
+      />
+    </SliderCard>
 
-              <SliderCard
-                title="Efficiency (miles per kWh)"
-                valueRight={milesPerKwh.toFixed(1)}
-              >
-             <div className="text-xs text-gray-400 mb-3">
-                  Estimated battery size:{" "}
-                  <span className="text-gray-200 font-semibold">
-                    {estBatteryKwh} kWh
-                  </span>  
-                </div>
-                <input
-                  type="range"
-                  min={2.0}
-                  max={4.5}
-                  step={0.1}
-                  value={milesPerKwh}
-                  onChange={(e) => setMilesPerKwh(Number(e.target.value))}
-                  className="w-full"
-                />
-                      
-              </SliderCard>
-              
-              <SliderCard
-                title="Weekday miles per driving day (Mon–Fri)"
-                valueRight={weekdayMilesPerDay}
-              >
-                <input
-                  type="range"
-                  min={0}
-                  max={250}
-                  step={5}
-                  value={weekdayMilesPerDay}
-                  onChange={(e) => setWeekdayMilesPerDay(Number(e.target.value))}
-                  className="w-full"
-                />
-              </SliderCard>
+    <SliderCard
+      title="Efficiency (miles per kWh)"
+      valueRight={milesPerKwh.toFixed(1)}
+    >
+      <div className="text-xs text-gray-400 mb-3">
+        Estimated battery size:{" "}
+        <span className="text-gray-200 font-semibold">{estBatteryKwh} kWh</span>
+      </div>
+      <input
+        type="range"
+        min={2.0}
+        max={4.5}
+        step={0.1}
+        value={milesPerKwh}
+        onChange={(e) => setMilesPerKwh(Number(e.target.value))}
+        className="w-full"
+      />
+    </SliderCard>
 
-              <SliderCard
-                title="Weekday Driving (Mon–Fri)"
-                valueRight={weekdayDrivingDays}
-              >
-                <input
-                  type="range"
-                  min={0}
-                  max={5}
-                  step={1}
-                  value={weekdayDrivingDays}
-                  onChange={(e) => setWeekdayDrivingDays(Number(e.target.value))}
-                  className="w-full"
-                />
-              </SliderCard>
+    <SliderCard
+      title="Weekday miles per driving day (Mon–Fri)"
+      valueRight={weekdayMilesPerDay}
+    >
+      <input
+        type="range"
+        min={0}
+        max={250}
+        step={5}
+        value={weekdayMilesPerDay}
+        onChange={(e) => setWeekdayMilesPerDay(Number(e.target.value))}
+        className="w-full"
+      />
+    </SliderCard>
 
-              <SliderCard title="Weekend miles" valueRight={weekendMiles}>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={5}
-                  value={weekendMiles}
-                  onChange={(e) => setWeekendMiles(Number(e.target.value))}
-                  className="w-full"
-                />
-              </SliderCard>
+    <SliderCard title="Weekday Driving (Mon–Fri)" valueRight={weekdayDrivingDays}>
+      <input
+        type="range"
+        min={0}
+        max={5}
+        step={1}
+        value={weekdayDrivingDays}
+        onChange={(e) => setWeekdayDrivingDays(Number(e.target.value))}
+        className="w-full"
+      />
+    </SliderCard>
 
-              {canPlug !== "no" && (
-            <SliderCard title="Weekend charging hours" valueRight={weekendChargeHours}>
-              <input
-                type="range"
-                min={0}
-                max={24}
-                step={1}
-                value={weekendChargeHours}
-                onChange={(e) => setWeekendChargeHours(Number(e.target.value))}
-                className="w-full"
-              />
-            </SliderCard>
-          )}
+    <SliderCard title="Weekend miles" valueRight={weekendMiles}>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        step={5}
+        value={weekendMiles}
+        onChange={(e) => setWeekendMiles(Number(e.target.value))}
+        className="w-full"
+      />
+    </SliderCard>
+
+    {canPlug !== "no" && (
+      <SliderCard title="Weekend charging hours" valueRight={weekendChargeHours}>
+        <input
+          type="range"
+          min={0}
+          max={24}
+          step={1}
+          value={weekendChargeHours}
+          onChange={(e) => setWeekendChargeHours(Number(e.target.value))}
+          className="w-full"
+        />
+      </SliderCard>
+    )}
+
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-  <button
-    type="button"
-    disabled={!plan}
-    onClick={() => setStep("PLAN")}
-    className={`rounded-2xl border border-white/10 transition p-4 font-semibold
-      ${
-        plan
-          ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
-          : "opacity-50 cursor-not-allowed bg-white/5"
-      }`}
-  >
-    Next →
-  </button>
+      <button
+        type="button"
+        disabled={!plan}
+        onClick={() => setStep("PLAN")}
+        className={`rounded-2xl border border-white/10 transition p-4 font-semibold
+          ${
+            plan
+              ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
+              : "opacity-50 cursor-not-allowed bg-white/5"
+          }`}
+      >
+        Next →
+      </button>
 
-  {canPlug === "no" ? (
-    <button
-      type="button"
-      onClick={reset}
-      className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-    >
-      ↺ Reset
-    </button>
-  ) : (
-    <button
-      type="button"
-      onClick={() => setStep("Q2")}
-      className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-    >
-      ← Change plug type
-    </button>
-  )}
-</div>
-          
+      {canPlug === "no" ? (
+        <button
+          type="button"
+          onClick={reset}
+          className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+        >
+          ↺ Reset
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setStep("Q2")}
+          className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+        >
+          ← Change plug type
+        </button>
+      )}
+    </div>
+  </div>
+)}
+
 {showPlan && (
   <div className="animate-[fadeIn_240ms_ease-out]">
     <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
@@ -520,7 +512,6 @@ const plan = useMemo(() => {
       )}
     </div>
 
-    {/* ✅ Buttons MUST be inside showPlan */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
       <button
         type="button"
@@ -548,49 +539,43 @@ const plan = useMemo(() => {
       </button>
     </div>
 
-    {/* ✅ Final result MUST also be inside showPlan */}
-  {showFinalResult && result && (
-  <div className="mt-8">
-    <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
-      {result.badge}
-    </span>
+    {showFinalResult && result && (
+      <div className="mt-8">
+        <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
+          {result.badge}
+        </span>
 
-    <h2 className={`mt-4 text-3xl sm:text-4xl font-bold ${result.color}`}>
-      {result.title}
-    </h2>
-    <p className="text-gray-200 mt-3 text-lg">{result.subtitle}</p>
+        <h2 className={`mt-4 text-3xl sm:text-4xl font-bold ${result.color}`}>
+          {result.title}
+        </h2>
+        <p className="text-gray-200 mt-3 text-lg">{result.subtitle}</p>
 
-    <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
-      <p className="text-sm text-gray-400 mb-2">What this means</p>
-      <p className="text-gray-200">{result.body}</p>
-    </div>
+        <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
+          <p className="text-sm text-gray-400 mb-2">What this means</p>
+          <p className="text-gray-200">{result.body}</p>
+        </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-      <button
-        type="button"
-        onClick={reset}
-        className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-      >
-        Start over
-      </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+          <button
+            type="button"
+            onClick={reset}
+            className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+          >
+            Start over
+          </button>
 
-      <button
-        type="button"
-        onClick={() => {
-          setShowFinalResult(false);
-          setStep("MILES");
-        }}
-        className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/[0.15] transition p-4 font-semibold"
-      >
-        ← Adjust my inputs
-      </button>
-    </div>
-  </div>
-)}
-  </div>
-)}
+          <button
+            type="button"
+            onClick={() => {
+              setShowFinalResult(false);
+              setStep("MILES");
+            }}
+            className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/[0.15] transition p-4 font-semibold"
+          >
+            ← Adjust my inputs
+          </button>
         </div>
       </div>
-    </main>
-  );
-}
+    )}
+  </div>
+)}
