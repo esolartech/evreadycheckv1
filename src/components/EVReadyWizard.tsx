@@ -493,14 +493,14 @@ export default function EVReadyWizard() {
                     <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
                     <div className="mt-6 text-center">
-                      <div className="text-center text-yellow-300">
-                        <div className="text-3xl sm:text-4xl font-black tracking-wide">
-                        FAST CHARGING:
-                        </div>
-                      <div className="text-5xl sm:text-6xl font-extrabold mt-2">
-                {fastChargeSessions} session(s) / week
-              </div>
-          </div>
+                 <div className="text-center text-yellow-300">
+  <div className="text-3xl sm:text-4xl font-black tracking-wide">
+    FAST CHARGING:
+  </div>
+  <div className="text-3xl sm:text-4xl font-bold mt-2">
+    {fastChargeSessions} session(s) / week
+  </div>
+</div>
                     </div>
 
                     
