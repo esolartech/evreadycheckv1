@@ -511,12 +511,7 @@ export default function EVReadyWizard() {
                     </div>
 
                     
-                    <p className="mt-4">
-                <span className="text-gray-200 font-semibold">
-                  Fast charge: {fastChargeSessions} session(s) / week
-                </span>
-              </p>
-              
+                            
               <div className="mt-6 p-4 rounded-xl bg-blue-950/40 border border-blue-400/20 text-sm text-blue-200">
                 <p className="font-semibold mb-1">
                   ❄ Cold Weather Impact
