@@ -547,7 +547,7 @@ const plan = useMemo(() => {
           <button
             type="button"
             onClick={reset}
-          className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/[0.15] transition px-16 py-6 text-xl font-bold"
+          className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/[0.15] transition px-20 py-7 text-2xl font-bold"
           >
             Start over
           </button>
