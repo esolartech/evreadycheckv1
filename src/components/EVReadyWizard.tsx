@@ -456,7 +456,8 @@ export default function EVReadyWizard() {
               </div>
             </div>
           )}
-      {showPlan && (
+     
+    {showPlan && (
   <div className="animate-[fadeIn_240ms_ease-out]">
     <h2 className="text-2xl sm:text-3xl font-semibold leading-tight">
       Here’s your weekly charging math
@@ -495,77 +496,73 @@ export default function EVReadyWizard() {
       </div>
     )}
 
-    {/* Buttons below stay unchanged */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+      <button
+        type="button"
+        disabled={!result}
+        onClick={() => setShowFinalResult(true)}
+        className={`rounded-2xl border border-white/10 transition p-4 font-semibold
+          ${
+            result
+              ? "hover:border-white/25 bg-white/10 hover:bg-white/[0.15]"
+              : "opacity-50 cursor-not-allowed bg-white/5"
+          }`}
+      >
+        Show my result ↓
+      </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          setShowFinalResult(false);
+          setStep("MILES");
+        }}
+        className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+      >
+        ← Back to sliders
+      </button>
+    </div>
+
+    {showFinalResult && result && (
+      <div className="mt-8">
+        <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
+          {result.badge}
+        </span>
+
+        <h2 className={`mt-4 text-3xl sm:text-4xl font-bold ${result.color}`}>
+          {result.title}
+        </h2>
+        <p className="text-gray-200 mt-3 text-lg">{result.subtitle}</p>
+
+        <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
+          <p className="text-sm text-gray-400 mb-2">What this means</p>
+          <p className="text-gray-200">{result.body}</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
+          <button
+            type="button"
+            onClick={reset}
+            className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+          >
+            Start over
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowFinalResult(false);
+              setStep("MILES");
+            }}
+            className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/[0.15] transition p-4 font-semibold"
+          >
+            ← Adjust my inputs
+          </button>
+        </div>
+      </div>
+    )}
   </div>
 )}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-                <button
-                  type="button"
-                  disabled={!result}
-                  onClick={() => setShowFinalResult(true)}
-                  className={`rounded-2xl border border-white/10 transition p-4 font-semibold
-                    ${
-                      result
-                        ? "hover:border-white/25 bg-white/10 hover:bg-white/15"
-                        : "opacity-50 cursor-not-allowed bg-white/5"
-                    }`}
-                >
-                  Show my result ↓
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowFinalResult(false);
-                    setStep("MILES");
-                  }}
-                  className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-                >
-                  ← Back to sliders
-                </button>
-              </div>
-
-              {showFinalResult && result && (
-                <div className="mt-8">
-                  <span className="text-xs tracking-widest text-gray-400 border border-white/10 px-3 py-1 rounded-full">
-                    {result.badge}
-                  </span>
-
-                  <h2 className={`mt-4 text-3xl sm:text-4xl font-bold ${result.color}`}>
-                    {result.title}
-                  </h2>
-                  <p className="text-gray-200 mt-3 text-lg">{result.subtitle}</p>
-
-                  <div className="mt-5 p-5 rounded-2xl bg-black/35 border border-white/10">
-                    <p className="text-sm text-gray-400 mb-2">What this means</p>
-                    <p className="text-gray-200">{result.body}</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-7">
-                    <button
-                      type="button"
-                      onClick={reset}
-                      className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-                    >
-                      Start over
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowFinalResult(false);
-                        setStep("MILES");
-                      }}
-                      className="rounded-2xl border border-white/10 hover:border-white/25 bg-white/10 hover:bg-white/15 transition p-4 font-semibold"
-                    >
-                      ← Adjust my inputs
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </main>
