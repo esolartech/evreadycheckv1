@@ -190,6 +190,10 @@ export default function EVReadyWizard() {
  
 
     // If NO overnight plug, always Level 0
+  const result = useMemo(() => {
+    const coldWeatherNote =
+      "Cold Weather Considerations: Be aware that electric car range can decrease by 15–30% in cold winter conditions.";
+
     if (canPlug === "no") {
       return {
         badge: "LEVEL 0",
@@ -204,7 +208,6 @@ export default function EVReadyWizard() {
 
     if (canPlug !== "yes" || !level) return null;
 
-    // Level 2 case: simple (you can adjust later)
     if (level === "L2") {
       if (weekdayMilesPerDay <= 200) {
         return {
@@ -227,16 +230,16 @@ export default function EVReadyWizard() {
       };
     }
 
-    // Level 1 case: use fastChargeSessions rule
+    // L1 logic based on fast charge sessions
     if (level === "L1") {
       if (fastChargeSessions <= 1) {
         return {
           badge: "READY (L1)",
           title: "✅ EV Ready (Level 1 works)",
           color: "text-green-300",
-          subtitle: "Your routine is light enough for Level 1.",
+          subtitle: "If it’s 1 fast charge — you’re EV Ready.",
           body:
-            "You can expect about 1 fast-charge session per week (or less). Keep a backup charger bookmarked for busy days.",
+            "You’ll typically need about 1 fast-charge session per week. Keep a backup station in mind for busy days.",
           note: coldWeatherNote,
         };
       }
@@ -246,8 +249,8 @@ export default function EVReadyWizard() {
           badge: "READY + PLAN",
           title: "🟠 EV Ready (with a plan)",
           color: "text-orange-300",
-          subtitle: "Level 1 can work, but you’ll need backup charging.",
-          body: `Plan for about ${fastChargeSessions} fast-charge session(s) per week. During heavier weeks, that could increase to ${fastChargeSessions + 1}.`,
+          subtitle: "If it’s 2 fast charges — you’re EV Ready with a plan.",
+          body: `You’ll need about ${fastChargeSessions} fast-charge sessions per week, and during heavier weeks it could become ${fastChargeSessions + 1}.`,
           note: coldWeatherNote,
         };
       }
@@ -256,8 +259,8 @@ export default function EVReadyWizard() {
         badge: "FAST-CHARGE DEPENDENT",
         title: "🚨 Fast Charge Dependent (Level 1)",
         color: "text-red-400",
-        subtitle: "Level 1 won’t keep up with this pattern.",
-        body: `At this mileage, you’ll depend on fast charging frequently — about ${fastChargeSessions} session(s) per week — unless you upgrade to Level 2.`,
+        subtitle: "If it’s 3+ fast charges — you’re Fast Charge Dependent.",
+        body: `At this mileage, you’ll rely heavily on fast charging — about ${fastChargeSessions} sessions per week — unless you upgrade to Level 2.`,
         note: coldWeatherNote,
       };
     }
