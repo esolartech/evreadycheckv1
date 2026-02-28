@@ -562,8 +562,8 @@ const plan = useMemo(() => {
               </div>
             </div>
           )}
-        </div>   {/* closes main card container */}
-      </div>     {/* closes max-w wrapper */}
+        </div>  
+      </div>     
     </main>
   );
 }
