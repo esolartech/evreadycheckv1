@@ -527,16 +527,13 @@ const plan = useMemo(() => {
         Show my result ↓
       </button>
 
-      <button
-        type="button"
-        onClick={() => {
-          setShowFinalResult(false);
-          setStep("MILES");
-        }}
-        className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
-      >
-        ← Back to sliders
-      </button>
+    <button
+  type="button"
+  onClick={reset}
+  className="rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-4 font-semibold"
+>
+  ← Back to start
+</button>
     </div>
 
     {showFinalResult && result && (
