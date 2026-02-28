@@ -299,9 +299,6 @@ export default function EVReadyWizard() {
         {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-8">
           <div>
-            <p className="text-xs tracking-widest text-gray-400 uppercase">
-              The Punchy &amp; Direct Approach
-            </p>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-2">
               The EV Reality Check
             </h1>
