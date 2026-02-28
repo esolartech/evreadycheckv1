@@ -225,7 +225,7 @@ const plan = useMemo(() => {
         title: "🚨 High Friction Risk (Level 1)",
         color: "text-red-400",
         subtitle: "Level 1 won’t keep up with this weekday pattern.",
-        body: "At this mileage, you’ll depend on fast charging frequently, atleast, ${fastChargeSessions} fast charge session(s) per week, unless you upgrade to Level 2.",
+        body: `At this mileage, you’ll depend on fast charging frequently, atleast, ${fastChargeSessions} fast charge session(s) per week, unless you upgrade to Level 2.`,
       };
     }
 
