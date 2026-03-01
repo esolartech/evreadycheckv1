@@ -99,7 +99,7 @@ function BigChoice({
     >
       <div className="flex items-center justify-between">
         <span className="text-lg font-semibold">{label}</span>
-        <span className="text-[#768948] group-hover:text-[#B39C4D] transition">↳</span>
+        <span className="text-[#768948] group-hover:text-[#B39C4D] transition">
           ↳
         </span>
       </div>
