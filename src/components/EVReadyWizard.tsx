@@ -72,13 +72,13 @@ function SliderCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mt-6 p-5 rounded-2xl bg-black/35 border border-white/10">
-      <div className="flex items-baseline justify-between">
-        <span className="text-sm text-gray-400">{title}</span>
-        <span className="text-3xl font-bold">{valueRight}</span>
-      </div>
-      <div className="mt-4">{children}</div>
-    </div>
+   <div className="mt-6 p-5 rounded-2xl bg-[#0F1C14]/45 border border-[#768948]/25">
+  <div className="flex items-baseline justify-between">
+    <span className="text-sm text-[#768948]">{title}</span>
+    <span className="text-3xl font-bold text-[#B39C4D]">{valueRight}</span>
+  </div>
+  <div className="mt-4">{children}</div>
+</div>
   );
 }
 
@@ -95,15 +95,15 @@ function BigChoice({
     <button
       type="button"
       onClick={onClick}
-      className="group rounded-2xl border border-white/10 hover:border-white/25 bg-black/30 hover:bg-black/40 transition p-5 text-left"
+      className="group rounded-2xl border border-[#768948]/25 hover:border-[#B39C4D]/60 bg-[#0F1C14]/35 hover:bg-[#0F1C14]/55 transition p-5 text-left""
     >
       <div className="flex items-center justify-between">
         <span className="text-lg font-semibold">{label}</span>
-        <span className="text-gray-400 group-hover:text-gray-200 transition">
+        <span className="text-[#768948] group-hover:text-[#B39C4D] transition">↳</span>
           ↳
         </span>
       </div>
-      <p className="text-sm text-gray-400 mt-2">{sub}</p>
+      <p className="text-sm text-[#768948] mt-2">{sub}</p>
     </button>
   );
 }
@@ -292,23 +292,23 @@ export default function EVReadyWizard() {
   const showPlan = step === "PLAN";
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_50%),radial-gradient(ellipse_at_bottom,rgba(34,197,94,0.10),transparent_45%)]" />
+  <main className="min-h-screen bg-[#0F1C14] text-white">
+  <div className="fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(179,156,77,0.14),transparent_55%),radial-gradient(ellipse_at_bottom,rgba(52,98,63,0.18),transparent_50%)]" />
 
       <div className="max-w-2xl mx-auto px-5 py-10">
         {/* Header */}
         <div className="mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-2">
-              The EV Reality Check
-            </h1>
-            <p className="text-gray-400 mt-2">
-              Range is easy.{" "}
-              <span className="text-gray-200">Charging is the game changer.</span>
-            </p>
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-[#B39C4D]">
+            The EV Reality Check
+          </h1>
+          <p className="text-[#768948] mt-2">
+            Range is easy.{" "}
+            <span className="text-[#D9D2B3]">Charging is the game changer.</span>
+          </p>
+        </div>
 
                  {/* Main card */}
-        <div className="bg-gray-900/70 backdrop-blur border border-white/10 rounded-2xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
+      <div className="bg-[#1A2A1E]/80 backdrop-blur border border-[#768948]/30 rounded-2xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
           {/* Q1 */}
           {step === "Q1" && (
             <div className="animate-[fadeIn_240ms_ease-out]">
@@ -389,7 +389,7 @@ export default function EVReadyWizard() {
                   step={10}
                   value={fullRange}
                   onChange={(e) => setFullRange(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full accent-[#B39C4D]"
                 />
               </SliderCard>
 
@@ -405,7 +405,7 @@ export default function EVReadyWizard() {
                   step={0.1}
                   value={milesPerKwh}
                   onChange={(e) => setMilesPerKwh(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full accent-[#B39C4D]"
                 />
               </SliderCard>
 
@@ -417,7 +417,7 @@ export default function EVReadyWizard() {
                   step={5}
                   value={weekdayMilesPerDay}
                   onChange={(e) => setWeekdayMilesPerDay(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full accent-[#B39C4D]"
                 />
               </SliderCard>
 
@@ -429,7 +429,7 @@ export default function EVReadyWizard() {
                   step={1}
                   value={weekdayDrivingDays}
                   onChange={(e) => setWeekdayDrivingDays(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full accent-[#B39C4D]"
                 />
               </SliderCard>
 
@@ -441,7 +441,7 @@ export default function EVReadyWizard() {
                   step={5}
                   value={weekendMiles}
                   onChange={(e) => setWeekendMiles(Number(e.target.value))}
-                  className="w-full"
+                  className="w-full accent-[#B39C4D]"
                 />
               </SliderCard>
 
@@ -455,7 +455,7 @@ export default function EVReadyWizard() {
                     step={1}
                     value={weekendChargeHours}
                     onChange={(e) => setWeekendChargeHours(Number(e.target.value))}
-                    className="w-full"
+                    className="w-full accent-[#B39C4D]"
                   />
                 </SliderCard>
               )}
@@ -493,7 +493,7 @@ export default function EVReadyWizard() {
                     <p>Weekly shortfall: ~{plan.weeklyShortfall} miles.</p>
 
                     <div className="mt-6 text-center">
-                 <div className="text-center text-yellow-300">
+               <div className="text-center text-[#B39C4D]">
                   <div className="text-3xl sm:text-4xl font-black tracking-wide">
                       DC FAST CHARGING:
                     </div>
@@ -505,10 +505,9 @@ export default function EVReadyWizard() {
 
                     
                             
-              <div className="mt-6 p-4 rounded-xl bg-blue-950/40 border border-blue-400/20 text-sm text-blue-200">
-                <p className="font-semibold mb-1">
-                  ❄ Cold Weather Impact
-                </p>
+              <div className="mt-6 p-4 rounded-xl bg-[#34623F]/15 border border-[#607744]/30 text-sm text-[#D9D2B3]">
+                <p className="font-semibold mb-1 text-[#B39C4D]">❄ Cold Weather Impact</p>
+               
                 <p>
                   Be aware that electric vehicle range can decrease by
                   <span className="font-semibold"> 15–30% </span>
