@@ -95,7 +95,7 @@ function BigChoice({
     <button
       type="button"
       onClick={onClick}
-      className="group rounded-2xl border border-[#768948]/25 hover:border-[#B39C4D]/60 bg-[#0F1C14]/35 hover:bg-[#0F1C14]/55 transition p-5 text-left""
+      className="group rounded-2xl border border-[#768948]/25 hover:border-[#B39C4D]/60 bg-[#0F1C14]/35 hover:bg-[#0F1C14]/55 transition p-5 text-left"
     >
       <div className="flex items-center justify-between">
         <span className="text-lg font-semibold">{label}</span>
